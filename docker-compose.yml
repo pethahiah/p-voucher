@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+    app:
+        image: my-voucher-app
+        container_name: evoucher-app
+        ports:
+            - "8182:8181"
+        volumes:
+            - .:/app
+        depends_on:
+            - db
+            - redis
+        environment:
+            - DB_CONNECTION=mysql
+            - DB_HOST=db
+            - DB_PORT=3306
+            - DB_DATABASE=evoucher
+            - DB_USERNAME=root
+            - DB_PASSWORD=root
+            - MAIL_MAILER=smtp
+            - MAIL_HOST=secure.emailsrvr.com
+            - MAIL_PORT=465
+            - MAIL_USERNAME=notify@azatme.com
+            - MAIL_PASSWORD="&N0f#ssw@rd"
+            - MAIL_ENCRYPTION=ssl
+            - MAIL_FROM_ADDRESS=notify@azatme.com
+            - MAIL_FROM_NAME=AzatMe
+
+    db:
+        image: mysql:5.7
+        container_name: mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: evoucher
+        volumes:
+            - mysql_data:/var/lib/mysql
+        ports:
+            - "3307:3306"
+
+    redis:
+        image: redis:alpine
+        container_name: redis
+        ports:
+            - "6379:6379"
+
+volumes:
+    mysql_data:
