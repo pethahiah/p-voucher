@@ -11,6 +11,14 @@ use App\Http\Responses\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
+
+
+/**
+ * @group Vouchers
+ *
+ * APIs for managing vouchers.
+ */
+
 class VoucherController extends Controller
 {
     protected VoucherService $voucherService;
@@ -20,6 +28,89 @@ class VoucherController extends Controller
         $this->voucherService = $voucherService;
     }
 
+    /**
+     * @group Vouchers
+     *
+     * Create a new voucher.
+     *
+     * This endpoint allows sponsors to create a new voucher with specified parameters.
+     *
+     * @bodyParam merchant_id array optional Array of merchant IDs. Example: [1, 2]
+     * @bodyParam purpose string optional Purpose of the voucher. Example: "Special Event"
+     * @bodyParam voucher_amount number required Total amount of the voucher. Example: 100
+     * @bodyParam amount_per_code number required Amount per voucher code. Example: 10
+     * @bodyParam expiry_date string optional Expiry date of the voucher in YYYY-MM-DD format. Example: "2024-12-31"
+     * @bodyParam limit number optional Limit on the number of uses. Example: 500
+     * @bodyParam type string optional Type of voucher (one_time or multiple_time). Example: multiple_time
+     * @bodyParam code_generation_method string optional Method for generating codes (sms or qr_code). Example: qr_code
+     * @bodyParam location string optional Location where the voucher is valid. Example: "Oyo"
+     *
+     * @response 201 {
+     *     "success": true,
+     *     "message": "Voucher created successfully.",
+     *     "data": {
+     *         "purpose": "Special Event",
+     *         "voucher_amount": 100,
+     *         "amount_per_code": 10,
+     *         "expiry_date": "2024-12-31",
+     *         "limit": 500,
+     *         "type": "multiple_time",
+     *         "code_generation_method": "qr_code",
+     *         "location": "Oyo",
+     *         "sponsor_id": 1,
+     *         "voucher_code": "19AGVCBQOA",
+     *         "updated_at": "2024-08-02T17:25:18.000000Z",
+     *         "created_at": "2024-08-02T17:25:18.000000Z",
+     *         "id": 10,
+     *         "merchants": [
+     *             {
+     *                 "id": 1,
+     *                 "user_id": 2,
+     *                 "store_name": "olaoluwa store",
+     *                 "store_description": "we feed the nation",
+     *                 "created_at": "2024-08-02T17:25:18.000000Z",
+     *                 "updated_at": "2024-08-02T17:25:18.000000Z",
+     *                 "voucher_code": "19AGVCBQOA"
+     *             },
+     *             {
+     *                 "id": 2,
+     *                 "user_id": 3,
+     *                 "store_name": "olaoluwa store",
+     *                 "store_description": "we feed the nation",
+     *                 "created_at": "2024-08-02T17:25:18.000000Z",
+     *                 "updated_at": "2024-08-02T17:25:18.000000Z",
+     *                 "voucher_code": "19AGVCBQOA"
+     *             }
+     *         ]
+     *     }
+     * }
+     *
+     * @response 403 {
+     *     "success": false,
+     *     "message": "Unauthorized: Only sponsors can create vouchers."
+     * }
+     *
+     * @response 500 {
+     *     "success": false,
+     *     "message": "Failed to create voucher.",
+     *     "error": "Detailed error message"
+     * }
+     *
+     * @example php
+     * $response = $client->post('/vouchers', [
+     *     'json' => [
+     *         'merchant_id' => [1, 2],
+     *         'purpose' => 'Special Event',
+     *         'voucher_amount' => 100,
+     *         'amount_per_code' => 10,
+     *         'expiry_date' => '2024-12-31',
+     *         'limit' => 500,
+     *         'type' => 'multiple_time',
+     *         'code_generation_method' => 'qr_code',
+     *         'location' => 'Oyo',
+     *     ],
+     * ]);
+     */
 
     public function store(Request $request): JsonResponse
     {
@@ -75,6 +166,99 @@ class VoucherController extends Controller
         }
     }
 
+    /**
+     * @group Vouchers
+     *
+     * Update an existing voucher.
+     *
+     * This endpoint allows updating the details of a voucher.
+     *
+     * @urlParam voucherId int required The ID of the voucher to update. Example: 10
+     *
+     * @bodyParam merchant_id array required List of merchant IDs associated with the voucher. Example: [1]
+     * @bodyParam purpose string required Purpose of the voucher. Example: "Special Discount"
+     * @bodyParam expiry_date string required Expiry date of the voucher in YYYY-MM-DD format. Example: "2024-12-31"
+     * @bodyParam limit number required Limit on the number of uses. Example: 100
+     * @bodyParam voucher_amount number required Total amount of the voucher. Example: 50.00
+     * @bodyParam amount_per_code number required Amount per voucher code. Example: 5.00
+     * @bodyParam type string required Type of voucher (one_time or multiple_time). Example: one_time
+     * @bodyParam code_generation_method string required Method for generating codes (qr_code or sms). Example: qr_code
+     * @bodyParam location string required Location where the voucher is valid. Example: "Lagos"
+     *
+     * @response 200 {
+     *     "success": true,
+     *     "message": "Voucher updated successfully.",
+     *     "data": {
+     *         "response": {
+     *             "id": 10,
+     *             "voucher_code": "19AGVCBQOA",
+     *             "sponsor_id": 1,
+     *             "purpose": "Special Discount",
+     *             "expiry_date": "2024-12-31",
+     *             "limit": 100,
+     *             "voucher_amount": 50.00,
+     *             "amount_per_code": 5.00,
+     *             "location": "Lagos",
+     *             "type": "one_time",
+     *             "voucher_status": "unused",
+     *             "code_generation_method": "qr_code",
+     *             "deleted_at": null,
+     *             "created_at": "2024-08-02T17:25:18.000000Z",
+     *             "updated_at": "2024-08-02T17:29:05.000000Z",
+     *             "merchants": [
+     *                 {
+     *                     "id": 1,
+     *                     "user_id": 2,
+     *                     "store_name": "olaoluwa store",
+     *                     "store_description": "we feed the nation",
+     *                     "voucher_code": null,
+     *                     "deleted_at": null,
+     *                     "created_at": "2024-08-02T17:05:28.000000Z",
+     *                     "updated_at": "2024-08-02T17:05:28.000000Z",
+     *                     "pivot": {
+     *                         "voucher_id": 10,
+     *                         "merchant_id": 1,
+     *                         "voucher_code": "19AGVCBQOA",
+     *                         "created_at": "2024-08-02T17:25:18.000000Z",
+     *                         "updated_at": "2024-08-02T17:29:05.000000Z"
+     *                     }
+     *                 }
+     *             ]
+     *         }
+     *     }
+     * }
+     *
+     * @response 403 {
+     *     "success": false,
+     *     "message": "Unauthorized: Only sponsors can update vouchers."
+     * }
+     *
+     * @response 404 {
+     *     "success": false,
+     *     "message": "Voucher not found."
+     * }
+     *
+     * @response 500 {
+     *     "success": false,
+     *     "message": "Failed to update voucher.",
+     *     "error": "Detailed error message"
+     * }
+     *
+     * @example php
+     * $response = $client->post('/update/10/voucher', [
+     *     'json' => [
+     *         'merchant_id' => [1],
+     *         'purpose' => 'Special Discount',
+     *         'expiry_date' => '2024-12-31',
+     *         'limit' => 100,
+     *         'voucher_amount' => 50.00,
+     *         'amount_per_code' => 5.00,
+     *         'type' => 'one_time',
+     *         'code_generation_method' => 'qr_code',
+     *         'location' => 'Lagos',
+     *     ],
+     * ]);
+     */
 
     public function update(Request $request, int $voucherId): JsonResponse
     {
@@ -129,6 +313,34 @@ class VoucherController extends Controller
      * @param int $VoucherId
      * @return JsonResponse
      */
+
+
+
+    /**
+     * Soft delete a voucher.
+     *
+     * @response 200 {
+     *     "success": true,
+     *     "message": "Voucher revoked successfully."
+     * }
+     *
+     * @response 403 {
+     *     "success": false,
+     *     "message": "Unauthorized: Only admin sponsors can revoke vouchers."
+     * }
+     *
+     * @response 404 {
+     *     "success": false,
+     *     "message": "Voucher not found.",
+     *     "error": "Detailed error message"
+     * }
+     *
+     * @response 500 {
+     *     "success": false,
+     *     "message": "Failed to revoke voucher.",
+     *     "error": "Detailed error message"
+     * }
+     */
     public function revoke(Request $request, int $VoucherId): JsonResponse
     {
 
@@ -156,6 +368,35 @@ class VoucherController extends Controller
      * @param int $VoucherId
      * @return JsonResponse
      */
+
+
+
+    /**
+     * Permanently delete a voucher.
+     *
+     * @response 200 {
+     *     "success": true,
+     *     "message": "Voucher deleted successfully."
+     * }
+     *
+     * @response 403 {
+     *     "success": false,
+     *     "message": "Unauthorized: Only admin sponsors can delete vouchers."
+     * }
+     *
+     * @response 404 {
+     *     "success": false,
+     *     "message": "Voucher not found.",
+     *     "error": "Detailed error message"
+     * }
+     *
+     * @response 500 {
+     *     "success": false,
+     *     "message": "Failed to delete voucher.",
+     *     "error": "Detailed error message"
+     * }
+     */
+
     public function destroy(Request $request, int $VoucherId): JsonResponse
     {
         $user = Auth::user();
@@ -176,12 +417,63 @@ class VoucherController extends Controller
         }
     }
 
+
     /**
+     * @group Vouchers
+     *
      * Redeem a voucher.
      *
-     * @param Request $request
-     * @return JsonResponse
+     * This endpoint allows users to redeem a voucher by providing its code.
+     *
+     * @urlParam voucher_code string required The code of the voucher to redeem. Example: "19AGVCBQOA"
+     *
+     * @response 200 {
+     *     "success": true,
+     *     "message": "Voucher redeemed successfully.",
+     *     "data": {
+     *         "response": null
+     *     }
+     * }
+     *
+     * @response 400 {
+     *     "success": false,
+     *     "message": "Voucher has expired."
+     * }
+     *
+     * @response 400 {
+     *     "success": false,
+     *     "message": "Voucher has already been used."
+     * }
+     *
+     * @response 400 {
+     *     "success": false,
+     *     "message": "No more vouchers available."
+     * }
+     *
+     * @response 400 {
+     *     "success": false,
+     *     "message": "Voucher is not valid in your location."
+     * }
+     *
+     * @response 404 {
+     *     "success": false,
+     *     "message": "Voucher not found."
+     * }
+     *
+     * @response 500 {
+     *     "success": false,
+     *     "message": "Failed to redeem voucher.",
+     *     "error": "Detailed error message"
+     * }
+     *
+     * @example php
+     * $response = $client->post('/vouchers/redeem', [
+     *     'json' => [
+     *         'voucher_code' => '19AGVCBQOA',
+     *     ],
+     * ]);
      */
+
     public function redeem(Request $request): JsonResponse
     {
         // Validate the request
@@ -221,11 +513,37 @@ class VoucherController extends Controller
     }
 
     /**
-     * Fetch all vouchers created by a sponsor with pagination.
+     * Fetch all vouchers created by a sponsor.
      *
-     * @param Request $request
-     * @return JsonResponse
+     * @queryParam per_page int optional Number of items per page. Example: 15
+     *
+     * @response 200 {
+     *     "success": true,
+     *     "message": "Fetched vouchers successfully.",
+     *     "data": {
+     *         "data": [
+     *             {
+     *                 "id": 1,
+     *                 "voucher_code": "ABC123",
+     *                 "voucher_amount": 100.00,
+     *                 "created_at": "2024-08-05T00:00:00Z",
+     *                 "updated_at": "2024-08-05T00:00:00Z"
+     *             }
+     *         ],
+     *         "current_page": 1,
+     *         "last_page": 10,
+     *         "per_page": 15,
+     *         "total": 150
+     *     }
+     * }
+     *
+     * @response 500 {
+     *     "success": false,
+     *     "message": "Failed to fetch vouchers.",
+     *     "error": "Detailed error message"
+     * }
      */
+
     public function getVouchersBySponsor(Request $request): JsonResponse
     {
         $user = Auth::user();
@@ -244,14 +562,59 @@ class VoucherController extends Controller
         }
     }
 
-
-
     /**
-     * Fetch vouchers by date range.
+     * @group Vouchers
      *
-     * @param Request $request
-     * @return JsonResponse
+     * Get vouchers by date range.
+     *
+     * This endpoint allows sponsors to fetch vouchers within a specified date range.
+     *
+     * @urlParam start_date string required The start date of the date range. Format: YYYY-MM-DD. Example: "2024-01-01"
+     * @urlParam end_date string required The end date of the date range. Format: YYYY-MM-DD. Example: "2024-12-31"
+     *
+     * @response 200 {
+     *     "success": true,
+     *     "message": "Vouchers fetched successfully.",
+     *     "data": [
+     *         {
+     *             "id": 10,
+     *             "voucher_code": "19AGVCBQOA",
+     *             "purpose": "Special Event",
+     *             "expiry_date": "2024-12-31",
+     *             "amount_per_code": 10,
+     *             "voucher_amount": 100,
+     *             "location": "Oyo",
+     *             "type": "multiple_time",
+     *             "code_generation_method": "qr_code",
+     *             "created_at": "2024-08-02T17:25:18.000000Z",
+     *             "updated_at": "2024-08-02T17:25:18.000000Z"
+     *         }
+     *     ]
+     * }
+     *
+     * @response 403 {
+     *     "success": false,
+     *     "message": "Unauthorized: Only sponsors can access their vouchers."
+     * }
+     *
+     * @response 500 {
+     *     "success": false,
+     *     "message": "Failed to fetch vouchers.",
+     *     "error": "Detailed error message"
+     * }
+     *
+     * @example php
+     * $response = $client->get('/vouchers/date-range', [
+     *     'query' => [
+     *         'start_date' => '2024-01-01',
+     *         'end_date' => '2024-12-31'
+     *     ],
+     *     'headers' => [
+     *         'Authorization' => 'Bearer YOUR_TOKEN_HERE'
+     *     ]
+     * ]);
      */
+
     public function getVouchersByDateRange(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -277,12 +640,52 @@ class VoucherController extends Controller
         }
     }
 
+
     /**
-     * Fetch all used vouchers with pagination.
+     * @group Vouchers
      *
-     * @param Request $request
-     * @return JsonResponse
+     * Get used vouchers.
+     *
+     * This endpoint retrieves all used vouchers with pagination support.
+     *
+     * @queryParam per_page int The number of vouchers per page. Default is 15. Example: 15
+     *
+     * @response 200 {
+     *     "success": true,
+     *     "message": "Fetched used vouchers successfully.",
+     *     "data": [
+     *         {
+     *             "id": 10,
+     *             "voucher_code": "19AGVCBQOA",
+     *             "purpose": "Special Event",
+     *             "expiry_date": "2024-12-31",
+     *             "amount_per_code": 10,
+     *             "voucher_amount": 100,
+     *             "location": "Oyo",
+     *             "type": "multiple_time",
+     *             "code_generation_method": "qr_code",
+     *             "used_at": "2024-08-02T17:25:18.000000Z"
+     *         }
+     *     ]
+     * }
+     *
+     * @response 500 {
+     *     "success": false,
+     *     "message": "Failed to fetch used vouchers.",
+     *     "error": "Detailed error message"
+     * }
+     *
+     * @example php
+     * $response = $client->get('/vouchers/used', [
+     *     'query' => [
+     *         'per_page' => 15
+     *     ],
+     *     'headers' => [
+     *         'Authorization' => 'Bearer YOUR_TOKEN_HERE'
+     *     ]
+     * ]);
      */
+
     public function getUsedVouchers(Request $request): JsonResponse
     {
         $perPage = $request->input('per_page', 15);
@@ -295,12 +698,52 @@ class VoucherController extends Controller
         }
     }
 
+
     /**
-     * Fetch all redeemed vouchers with pagination.
+     * @group Vouchers
      *
-     * @param Request $request
-     * @return JsonResponse
+     * Get redeemed vouchers.
+     *
+     * This endpoint retrieves all redeemed vouchers with pagination support.
+     *
+     * @queryParam per_page int The number of vouchers per page. Default is 15. Example: 15
+     *
+     * @response 200 {
+     *     "success": true,
+     *     "message": "Fetched redeemed vouchers successfully.",
+     *     "data": [
+     *         {
+     *             "id": 10,
+     *             "voucher_code": "19AGVCBQOA",
+     *             "purpose": "Special Event",
+     *             "expiry_date": "2024-12-31",
+     *             "amount_per_code": 10,
+     *             "voucher_amount": 100,
+     *             "location": "Oyo",
+     *             "type": "multiple_time",
+     *             "code_generation_method": "qr_code",
+     *             "redeemed_at": "2024-08-02T17:25:18.000000Z"
+     *         }
+     *     ]
+     * }
+     *
+     * @response 500 {
+     *     "success": false,
+     *     "message": "Failed to fetch redeemed vouchers.",
+     *     "error": "Detailed error message"
+     * }
+     *
+     * @example php
+     * $response = $client->get('/vouchers/redeemed', [
+     *     'query' => [
+     *         'per_page' => 15
+     *     ],
+     *     'headers' => [
+     *         'Authorization' => 'Bearer YOUR_TOKEN_HERE'
+     *     ]
+     * ]);
      */
+
     public function getRedeemedVouchers(Request $request): JsonResponse
     {
         $perPage = $request->input('per_page', 15);
@@ -313,12 +756,45 @@ class VoucherController extends Controller
         }
     }
 
+
     /**
-     * Fetch all beneficiaries who redeemed vouchers with pagination.
+     * @group Vouchers
      *
-     * @param Request $request
-     * @return JsonResponse
+     * Get beneficiaries with redeemed vouchers.
+     *
+     * This endpoint retrieves beneficiaries who have redeemed vouchers with pagination support.
+     *
+     * @queryParam per_page int The number of beneficiaries per page. Default is 15. Example: 15
+     *
+     * @response 200 {
+     *     "success": true,
+     *     "message": "Fetched beneficiaries with redeemed vouchers successfully.",
+     *     "data": [
+     *         {
+     *             "id": 1,
+     *             "name": "John Doe",
+     *             "redeemed_vouchers_count": 5
+     *         }
+     *     ]
+     * }
+     *
+     * @response 500 {
+     *     "success": false,
+     *     "message": "Failed to fetch beneficiaries.",
+     *     "error": "Detailed error message"
+     * }
+     *
+     * @example php
+     * $response = $client->get('/beneficiaries/redeemed', [
+     *     'query' => [
+     *         'per_page' => 15
+     *     ],
+     *     'headers' => [
+     *         'Authorization' => 'Bearer YOUR_TOKEN_HERE'
+     *     ]
+     * ]);
      */
+
     public function getBeneficiariesWithRedeemedVouchers(Request $request): JsonResponse
     {
         $perPage = $request->input('per_page', 15);
@@ -331,12 +807,52 @@ class VoucherController extends Controller
         }
     }
 
+
     /**
-     * Fetch all vouchers that are yet to be redeemed with pagination.
+     * @group Vouchers
      *
-     * @param Request $request
-     * @return JsonResponse
+     * Get vouchers yet to be redeemed.
+     *
+     * This endpoint retrieves vouchers that have not yet been redeemed with pagination support.
+     *
+     * @queryParam per_page int The number of vouchers per page. Default is 15. Example: 15
+     *
+     * @response 200 {
+     *     "success": true,
+     *     "message": "Fetched vouchers yet to be redeemed successfully.",
+     *     "data": [
+     *         {
+     *             "id": 10,
+     *             "voucher_code": "19AGVCBQOA",
+     *             "purpose": "Special Event",
+     *             "expiry_date": "2024-12-31",
+     *             "amount_per_code": 10,
+     *             "voucher_amount": 100,
+     *             "location": "Oyo",
+     *             "type": "multiple_time",
+     *             "code_generation_method": "qr_code",
+     *             "created_at": "2024-08-02T17:25:18.000000Z"
+     *         }
+     *     ]
+     * }
+     *
+     * @response 500 {
+     *     "success": false,
+     *     "message": "Failed to fetch vouchers yet to be redeemed.",
+     *     "error": "Detailed error message"
+     * }
+     *
+     * @example php
+     * $response = $client->get('/vouchers/yet-to-be-redeemed', [
+     *     'query' => [
+     *         'per_page' => 15
+     *     ],
+     *     'headers' => [
+     *         'Authorization' => 'Bearer YOUR_TOKEN_HERE'
+     *     ]
+     * ]);
      */
+
     public function getVouchersYetToBeRedeemed(Request $request): JsonResponse
     {
         $perPage = $request->input('per_page', 15);

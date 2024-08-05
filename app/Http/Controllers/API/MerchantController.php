@@ -18,12 +18,52 @@ class MerchantController extends Controller
         $this->merchantService = $merchantService;
     }
 
+
     /**
-     * Fetch the merchant profile by ID.
+     * @group Merchants
      *
-     * @param int $merchantId
-     * @return JsonResponse
+     * Get merchant profile.
+     *
+     * This endpoint retrieves the profile details of a specific merchant based on their ID.
+     *
+     * @urlParam merchantId int required The ID of the merchant. Example: 1
+     *
+     * @response 200 {
+     *     "success": true,
+     *     "message": "Merchant profile fetched successfully.",
+     *     "data": {
+     *         "id": 1,
+     *         "user_id": 2,
+     *         "store_name": "Merchant Store",
+     *         "store_description": "A description of the store.",
+     *         "location": "City",
+     *         "contact_email": "merchant@example.com",
+     *         "contact_phone": "+1234567890",
+     *         "created_at": "2024-01-01T00:00:00.000000Z",
+     *         "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     * }
+     *
+     * @response 404 {
+     *     "success": false,
+     *     "message": "Merchant not found.",
+     *     "error": "Detailed error message"
+     * }
+     *
+     * @response 500 {
+     *     "success": false,
+     *     "message": "Failed to fetch merchant profile.",
+     *     "error": "Detailed error message"
+     * }
+     *
+     * @example php
+     * $response = $client->get('/merchants/1', [
+     *     'headers' => [
+     *         'Authorization' => 'Bearer YOUR_TOKEN_HERE'
+     *     ]
+     * ]);
      */
+
     public function getMerchantProfile(int $merchantId): JsonResponse
     {
         try {

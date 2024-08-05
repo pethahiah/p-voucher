@@ -1,0 +1,96 @@
+name: Sponsors
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: 'api/sponsors/{id}'
+    metadata:
+      groupName: Sponsors
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Get sponsor details.
+
+        This endpoint retrieves details of a specific sponsor based on their ID.
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the sponsor.'
+        required: true
+        example: quia
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      sponsorId:
+        name: sponsorId
+        description: 'The ID of the sponsor.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      id: quia
+      sponsorId: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+              "success": true,
+              "message": "Sponsor details fetched successfully.",
+              "data": {
+                  "id": 1,
+                  "name": "Sponsor Name",
+                  "email": "sponsor@example.com",
+                  "phone": "+1234567890",
+                  "created_at": "2024-01-01T00:00:00.000000Z",
+                  "updated_at": "2024-01-01T00:00:00.000000Z"
+              }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+              "success": false,
+              "message": "Sponsor not found.",
+              "error": "Detailed error message"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+              "success": false,
+              "message": "Failed to fetch sponsor details.",
+              "error": "Detailed error message"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []

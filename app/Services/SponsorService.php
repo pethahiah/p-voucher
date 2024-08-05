@@ -7,13 +7,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class SponsorService
 {
-    /**
-     * Fetch the sponsor details by Sponsor ID.
-     *
-     * @param int $sponsorId
-     * @return array
-     * @throws ModelNotFoundException
-     */
+
     public function getSponsorDetails(int $sponsorId): array
     {
         // Find the sponsor by ID and load associated user details

@@ -157,7 +157,8 @@ class VoucherService
         $beneficiaryLocation = $this->getLocationByIp($ipAddress);
         Log::info("Beneficiary location determined", ['ip_address' => $ipAddress, 'location' => $beneficiaryLocation]);
 
-        if ($voucher->location !== $beneficiaryLocation) {
+        // Pass if voucher location is NULL or if it matches beneficiary location
+        if ($voucher->location !== null && $voucher->location !== $beneficiaryLocation) {
             Log::warning("Voucher location mismatch", [
                 'voucher_code' => $voucherCode,
                 'voucher_location' => $voucher->location,

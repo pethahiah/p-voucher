@@ -1,0 +1,1077 @@
+{
+    "variable": [
+        {
+            "id": "baseUrl",
+            "key": "baseUrl",
+            "type": "string",
+            "name": "string",
+            "value": "http:\/\/localhost"
+        }
+    ],
+    "info": {
+        "name": "p-voucher-app",
+        "_postman_id": "08ecf1ed-5add-4214-af45-3363572c92ae",
+        "description": "",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "Authentication",
+            "description": "",
+            "item": [
+                {
+                    "name": "Attempt to login and send an OTP.\n\nThis endpoint verifies the user's email and sends an OTP to the user's email for authentication.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/attemptLogin",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/attemptLogin"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"user@example.com\",\"password\":\"Password123!\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"success\": true,\n    \"message\": \"OTP sent successfully.\",\n    \"data\": null\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Invalid credentials.\",\n    \"error\": \"Detailed error message\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Validation error\",\n    \"errors\": {\n        \"email\": [\"The email field is required.\"],\n        \"password\": [\"The password field is required.\"]\n    }\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Login using OTP.\n\nThis endpoint logs the user in using the OTP sent to their email.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/loginViaOtp",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/loginViaOtp"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"user@example.com\",\"otp\":\"123456\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Login successful.\",\n    \"data\": \"Bearer token\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Invalid OTP or email.\",\n    \"error\": \"Detailed error message\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Validation error\",\n    \"errors\": {\n        \"email\": [\"The email field is required.\"],\n        \"otp\": [\"The otp field is required.\"]\n    }\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Register a new user.\n\nThis endpoint registers a new user, creates associated records based on the user type, and optionally uploads a profile image.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/register",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/register"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "email",
+                                    "value": "user@example.com",
+                                    "type": "text",
+                                    "description": "The user's email address."
+                                },
+                                {
+                                    "key": "phone",
+                                    "value": "+1234567890",
+                                    "type": "text",
+                                    "description": "The user's phone number."
+                                },
+                                {
+                                    "key": "city",
+                                    "value": "Lagos",
+                                    "type": "text",
+                                    "description": "The city where the user resides."
+                                },
+                                {
+                                    "key": "address",
+                                    "value": "123 Main St",
+                                    "type": "text",
+                                    "description": "The user's address."
+                                },
+                                {
+                                    "key": "state",
+                                    "value": "Lagos",
+                                    "type": "text",
+                                    "description": "The state where the user resides."
+                                },
+                                {
+                                    "key": "country",
+                                    "value": "Nigeria",
+                                    "type": "text",
+                                    "description": "The country where the user resides."
+                                },
+                                {
+                                    "key": "usertype",
+                                    "value": "merchant",
+                                    "type": "text",
+                                    "description": "The type of user: merchant or sponsor."
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "Password123!",
+                                    "type": "text",
+                                    "description": "The user's password."
+                                },
+                                {
+                                    "key": "password_confirmation",
+                                    "value": "Password123!",
+                                    "type": "text",
+                                    "description": "Confirmation of the user's password."
+                                },
+                                {
+                                    "key": "store_name",
+                                    "value": "Super Store",
+                                    "type": "text",
+                                    "description": "optional The store name (required if usertype is merchant)."
+                                },
+                                {
+                                    "key": "store_description",
+                                    "value": "Best store in town",
+                                    "type": "text",
+                                    "description": "optional A description of the store (required if usertype is merchant)."
+                                },
+                                {
+                                    "key": "sponsor_name",
+                                    "value": "Big Sponsor Inc",
+                                    "type": "text",
+                                    "description": "optional The sponsor's name (required if usertype is sponsor)."
+                                },
+                                {
+                                    "key": "sponsor_registration_number",
+                                    "value": "REG123456",
+                                    "type": "text",
+                                    "description": "optional The sponsor's registration number (required if usertype is sponsor)."
+                                },
+                                {
+                                    "key": "sponsor_description",
+                                    "value": "Leading sponsor in the industry",
+                                    "type": "text",
+                                    "description": "optional A description of the sponsor (required if usertype is sponsor)."
+                                },
+                                {
+                                    "key": "type",
+                                    "value": "Gold",
+                                    "type": "text",
+                                    "description": "optional The type of sponsor (required if usertype is sponsor)."
+                                },
+                                {
+                                    "key": "image",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n    \"success\": true,\n    \"message\": \"User created successfully.\",\n    \"data\": {\n        \"id\": 1,\n        \"email\": \"user@example.com\",\n        \"phone\": \"+1234567890\",\n        \"city\": \"Lagos\",\n        \"address\": \"123 Main St\",\n        \"state\": \"Lagos\",\n        \"country\": \"Nigeria\",\n        \"usertype\": \"merchant\",\n        \"image\": \"http:\/\/localhost\/storage\/images\/image.jpg\",\n        \"created_at\": \"2024-01-01T00:00:00.000000Z\",\n        \"updated_at\": \"2024-01-01T00:00:00.000000Z\"\n    }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Validation error\",\n    \"errors\": {\n        \"email\": [\"The email has already been taken.\"],\n        \"password\": [\"The password confirmation does not match.\"]\n    }\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Logout the currently authenticated user.\n\nThis endpoint logs out the currently authenticated user and revokes all their tokens.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/logout",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/logout"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Success! You are logged out.\",\n    \"data\": null\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Failed! You are already logged out.\",\n    \"error\": \"Detailed error message\"\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Merchants",
+            "description": "",
+            "item": [
+                {
+                    "name": "Get merchant profile.\n\nThis endpoint retrieves the profile details of a specific merchant based on their ID.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/merchants\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/merchants\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "optio",
+                                    "description": "The ID of the merchant."
+                                },
+                                {
+                                    "id": "merchantId",
+                                    "key": "merchantId",
+                                    "value": "1",
+                                    "description": "The ID of the merchant."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Merchant profile fetched successfully.\",\n    \"data\": {\n        \"id\": 1,\n        \"user_id\": 2,\n        \"store_name\": \"Merchant Store\",\n        \"store_description\": \"A description of the store.\",\n        \"location\": \"City\",\n        \"contact_email\": \"merchant@example.com\",\n        \"contact_phone\": \"+1234567890\",\n        \"created_at\": \"2024-01-01T00:00:00.000000Z\",\n        \"updated_at\": \"2024-01-01T00:00:00.000000Z\"\n    }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Merchant not found.\",\n    \"error\": \"Detailed error message\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Failed to fetch merchant profile.\",\n    \"error\": \"Detailed error message\"\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Sponsors",
+            "description": "",
+            "item": [
+                {
+                    "name": "Get sponsor details.\n\nThis endpoint retrieves details of a specific sponsor based on their ID.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/sponsors\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/sponsors\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "quia",
+                                    "description": "The ID of the sponsor."
+                                },
+                                {
+                                    "id": "sponsorId",
+                                    "key": "sponsorId",
+                                    "value": "1",
+                                    "description": "The ID of the sponsor."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Sponsor details fetched successfully.\",\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"Sponsor Name\",\n        \"email\": \"sponsor@example.com\",\n        \"phone\": \"+1234567890\",\n        \"created_at\": \"2024-01-01T00:00:00.000000Z\",\n        \"updated_at\": \"2024-01-01T00:00:00.000000Z\"\n    }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Sponsor not found.\",\n    \"error\": \"Detailed error message\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Failed to fetch sponsor details.\",\n    \"error\": \"Detailed error message\"\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Vouchers",
+            "description": "\nAPIs for managing vouchers.",
+            "item": [
+                {
+                    "name": "Create a new voucher.\n\nThis endpoint allows sponsors to create a new voucher with specified parameters.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/vouchers",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/vouchers"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"merchant_id\":[1,2],\"purpose\":\"\\\"Special Event\\\"\",\"voucher_amount\":100,\"amount_per_code\":10,\"expiry_date\":\"\\\"2024-12-31\\\"\",\"limit\":500,\"type\":\"multiple_time\",\"code_generation_method\":\"qr_code\",\"location\":\"\\\"Oyo\\\"\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Voucher created successfully.\",\n    \"data\": {\n        \"purpose\": \"Special Event\",\n        \"voucher_amount\": 100,\n        \"amount_per_code\": 10,\n        \"expiry_date\": \"2024-12-31\",\n        \"limit\": 500,\n        \"type\": \"multiple_time\",\n        \"code_generation_method\": \"qr_code\",\n        \"location\": \"Oyo\",\n        \"sponsor_id\": 1,\n        \"voucher_code\": \"19AGVCBQOA\",\n        \"updated_at\": \"2024-08-02T17:25:18.000000Z\",\n        \"created_at\": \"2024-08-02T17:25:18.000000Z\",\n        \"id\": 10,\n        \"merchants\": [\n            {\n                \"id\": 1,\n                \"user_id\": 2,\n                \"store_name\": \"olaoluwa store\",\n                \"store_description\": \"we feed the nation\",\n                \"created_at\": \"2024-08-02T17:25:18.000000Z\",\n                \"updated_at\": \"2024-08-02T17:25:18.000000Z\",\n                \"voucher_code\": \"19AGVCBQOA\"\n            },\n            {\n                \"id\": 2,\n                \"user_id\": 3,\n                \"store_name\": \"olaoluwa store\",\n                \"store_description\": \"we feed the nation\",\n                \"created_at\": \"2024-08-02T17:25:18.000000Z\",\n                \"updated_at\": \"2024-08-02T17:25:18.000000Z\",\n                \"voucher_code\": \"19AGVCBQOA\"\n            }\n        ]\n    }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Unauthorized: Only sponsors can create vouchers.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Failed to create voucher.\",\n    \"error\": \"Detailed error message\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Redeem a voucher.\n\nThis endpoint allows users to redeem a voucher by providing its code.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/vouchers\/redeem",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/vouchers\/redeem",
+                            "variable": [
+                                {
+                                    "id": "voucher_code",
+                                    "key": "voucher_code",
+                                    "value": "%2219AGVCBQOA%22",
+                                    "description": "The code of the voucher to redeem."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"voucher_code\":\"saepe\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Voucher redeemed successfully.\",\n    \"data\": {\n        \"response\": null\n    }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Voucher has expired.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Voucher has already been used.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"No more vouchers available.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Voucher is not valid in your location.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Voucher not found.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Failed to redeem voucher.\",\n    \"error\": \"Detailed error message\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Update an existing voucher.\n\nThis endpoint allows updating the details of a voucher.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/update\/:VoucherId\/voucher",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/update\/:VoucherId\/voucher",
+                            "variable": [
+                                {
+                                    "id": "VoucherId",
+                                    "key": "VoucherId",
+                                    "value": "minima",
+                                    "description": ""
+                                },
+                                {
+                                    "id": "voucherId",
+                                    "key": "voucherId",
+                                    "value": "10",
+                                    "description": "The ID of the voucher to update."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"merchant_id\":[1],\"purpose\":\"\\\"Special Discount\\\"\",\"voucher_amount\":50,\"amount_per_code\":5,\"expiry_date\":\"\\\"2024-12-31\\\"\",\"limit\":100,\"type\":\"one_time\",\"code_generation_method\":\"qr_code\",\"location\":\"\\\"Lagos\\\"\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Voucher updated successfully.\",\n    \"data\": {\n        \"response\": {\n            \"id\": 10,\n            \"voucher_code\": \"19AGVCBQOA\",\n            \"sponsor_id\": 1,\n            \"purpose\": \"Special Discount\",\n            \"expiry_date\": \"2024-12-31\",\n            \"limit\": 100,\n            \"voucher_amount\": 50.00,\n            \"amount_per_code\": 5.00,\n            \"location\": \"Lagos\",\n            \"type\": \"one_time\",\n            \"voucher_status\": \"unused\",\n            \"code_generation_method\": \"qr_code\",\n            \"deleted_at\": null,\n            \"created_at\": \"2024-08-02T17:25:18.000000Z\",\n            \"updated_at\": \"2024-08-02T17:29:05.000000Z\",\n            \"merchants\": [\n                {\n                    \"id\": 1,\n                    \"user_id\": 2,\n                    \"store_name\": \"olaoluwa store\",\n                    \"store_description\": \"we feed the nation\",\n                    \"voucher_code\": null,\n                    \"deleted_at\": null,\n                    \"created_at\": \"2024-08-02T17:05:28.000000Z\",\n                    \"updated_at\": \"2024-08-02T17:05:28.000000Z\",\n                    \"pivot\": {\n                        \"voucher_id\": 10,\n                        \"merchant_id\": 1,\n                        \"voucher_code\": \"19AGVCBQOA\",\n                        \"created_at\": \"2024-08-02T17:25:18.000000Z\",\n                        \"updated_at\": \"2024-08-02T17:29:05.000000Z\"\n                    }\n                }\n            ]\n        }\n    }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Unauthorized: Only sponsors can update vouchers.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Voucher not found.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Failed to update voucher.\",\n    \"error\": \"Detailed error message\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Soft delete a voucher.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/revoke\/:VoucherId",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/revoke\/:VoucherId",
+                            "variable": [
+                                {
+                                    "id": "VoucherId",
+                                    "key": "VoucherId",
+                                    "value": "inventore",
+                                    "description": ""
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Voucher revoked successfully.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Unauthorized: Only admin sponsors can revoke vouchers.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Voucher not found.\",\n    \"error\": \"Detailed error message\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Failed to revoke voucher.\",\n    \"error\": \"Detailed error message\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Permanently delete a voucher.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/delete-voucher\/:VoucherId",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/delete-voucher\/:VoucherId",
+                            "variable": [
+                                {
+                                    "id": "VoucherId",
+                                    "key": "VoucherId",
+                                    "value": "tempore",
+                                    "description": ""
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Voucher deleted successfully.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Unauthorized: Only admin sponsors can delete vouchers.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Voucher not found.\",\n    \"error\": \"Detailed error message\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Failed to delete voucher.\",\n    \"error\": \"Detailed error message\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Fetch all vouchers created by a sponsor.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/vouchers\/by-sponsor",
+                            "query": [
+                                {
+                                    "key": "per_page",
+                                    "value": "15",
+                                    "description": "optional Number of items per page.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/vouchers\/by-sponsor?per_page=15"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Fetched vouchers successfully.\",\n    \"data\": {\n        \"data\": [\n            {\n                \"id\": 1,\n                \"voucher_code\": \"ABC123\",\n                \"voucher_amount\": 100.00,\n                \"created_at\": \"2024-08-05T00:00:00Z\",\n                \"updated_at\": \"2024-08-05T00:00:00Z\"\n            }\n        ],\n        \"current_page\": 1,\n        \"last_page\": 10,\n        \"per_page\": 15,\n        \"total\": 150\n    }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Failed to fetch vouchers.\",\n    \"error\": \"Detailed error message\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get used vouchers.\n\nThis endpoint retrieves all used vouchers with pagination support.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/vouchers\/used",
+                            "query": [
+                                {
+                                    "key": "per_page",
+                                    "value": "15",
+                                    "description": "The number of vouchers per page. Default is 15.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/vouchers\/used?per_page=15"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Fetched used vouchers successfully.\",\n    \"data\": [\n        {\n            \"id\": 10,\n            \"voucher_code\": \"19AGVCBQOA\",\n            \"purpose\": \"Special Event\",\n            \"expiry_date\": \"2024-12-31\",\n            \"amount_per_code\": 10,\n            \"voucher_amount\": 100,\n            \"location\": \"Oyo\",\n            \"type\": \"multiple_time\",\n            \"code_generation_method\": \"qr_code\",\n            \"used_at\": \"2024-08-02T17:25:18.000000Z\"\n        }\n    ]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Failed to fetch used vouchers.\",\n    \"error\": \"Detailed error message\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get redeemed vouchers.\n\nThis endpoint retrieves all redeemed vouchers with pagination support.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/vouchers\/redeemed",
+                            "query": [
+                                {
+                                    "key": "per_page",
+                                    "value": "15",
+                                    "description": "The number of vouchers per page. Default is 15.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/vouchers\/redeemed?per_page=15"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Fetched redeemed vouchers successfully.\",\n    \"data\": [\n        {\n            \"id\": 10,\n            \"voucher_code\": \"19AGVCBQOA\",\n            \"purpose\": \"Special Event\",\n            \"expiry_date\": \"2024-12-31\",\n            \"amount_per_code\": 10,\n            \"voucher_amount\": 100,\n            \"location\": \"Oyo\",\n            \"type\": \"multiple_time\",\n            \"code_generation_method\": \"qr_code\",\n            \"redeemed_at\": \"2024-08-02T17:25:18.000000Z\"\n        }\n    ]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Failed to fetch redeemed vouchers.\",\n    \"error\": \"Detailed error message\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get beneficiaries with redeemed vouchers.\n\nThis endpoint retrieves beneficiaries who have redeemed vouchers with pagination support.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/beneficiaries\/redeemed",
+                            "query": [
+                                {
+                                    "key": "per_page",
+                                    "value": "15",
+                                    "description": "The number of beneficiaries per page. Default is 15.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/beneficiaries\/redeemed?per_page=15"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Fetched beneficiaries with redeemed vouchers successfully.\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"John Doe\",\n            \"redeemed_vouchers_count\": 5\n        }\n    ]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Failed to fetch beneficiaries.\",\n    \"error\": \"Detailed error message\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get vouchers yet to be redeemed.\n\nThis endpoint retrieves vouchers that have not yet been redeemed with pagination support.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/vouchers\/yet-to-be-redeemed",
+                            "query": [
+                                {
+                                    "key": "per_page",
+                                    "value": "15",
+                                    "description": "The number of vouchers per page. Default is 15.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/vouchers\/yet-to-be-redeemed?per_page=15"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Fetched vouchers yet to be redeemed successfully.\",\n    \"data\": [\n        {\n            \"id\": 10,\n            \"voucher_code\": \"19AGVCBQOA\",\n            \"purpose\": \"Special Event\",\n            \"expiry_date\": \"2024-12-31\",\n            \"amount_per_code\": 10,\n            \"voucher_amount\": 100,\n            \"location\": \"Oyo\",\n            \"type\": \"multiple_time\",\n            \"code_generation_method\": \"qr_code\",\n            \"created_at\": \"2024-08-02T17:25:18.000000Z\"\n        }\n    ]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Failed to fetch vouchers yet to be redeemed.\",\n    \"error\": \"Detailed error message\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get vouchers by date range.\n\nThis endpoint allows sponsors to fetch vouchers within a specified date range.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/voucher-search\/date-range",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/voucher-search\/date-range",
+                            "variable": [
+                                {
+                                    "id": "start_date",
+                                    "key": "start_date",
+                                    "value": "%222024-01-01%22",
+                                    "description": "The start date of the date range. Format: YYYY-MM-DD."
+                                },
+                                {
+                                    "id": "end_date",
+                                    "key": "end_date",
+                                    "value": "%222024-12-31%22",
+                                    "description": "The end date of the date range. Format: YYYY-MM-DD."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"start_date\":\"2024-08-05T07:51:40\",\"end_date\":\"2024-08-05T07:51:40\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Vouchers fetched successfully.\",\n    \"data\": [\n        {\n            \"id\": 10,\n            \"voucher_code\": \"19AGVCBQOA\",\n            \"purpose\": \"Special Event\",\n            \"expiry_date\": \"2024-12-31\",\n            \"amount_per_code\": 10,\n            \"voucher_amount\": 100,\n            \"location\": \"Oyo\",\n            \"type\": \"multiple_time\",\n            \"code_generation_method\": \"qr_code\",\n            \"created_at\": \"2024-08-02T17:25:18.000000Z\",\n            \"updated_at\": \"2024-08-02T17:25:18.000000Z\"\n        }\n    ]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Unauthorized: Only sponsors can access their vouchers.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\n    \"success\": false,\n    \"message\": \"Failed to fetch vouchers.\",\n    \"error\": \"Detailed error message\"\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "noauth"
+    }
+}

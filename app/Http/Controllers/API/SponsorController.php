@@ -19,12 +19,49 @@ class SponsorController extends Controller
         $this->sponsorService = $sponsorService;
     }
 
+
     /**
-     * Fetch the sponsor details by Sponsor ID.
+     * @group Sponsors
      *
-     * @param int $sponsorId
-     * @return JsonResponse
+     * Get sponsor details.
+     *
+     * This endpoint retrieves details of a specific sponsor based on their ID.
+     *
+     * @urlParam sponsorId int required The ID of the sponsor. Example: 1
+     *
+     * @response 200 {
+     *     "success": true,
+     *     "message": "Sponsor details fetched successfully.",
+     *     "data": {
+     *         "id": 1,
+     *         "name": "Sponsor Name",
+     *         "email": "sponsor@example.com",
+     *         "phone": "+1234567890",
+     *         "created_at": "2024-01-01T00:00:00.000000Z",
+     *         "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     * }
+     *
+     * @response 404 {
+     *     "success": false,
+     *     "message": "Sponsor not found.",
+     *     "error": "Detailed error message"
+     * }
+     *
+     * @response 500 {
+     *     "success": false,
+     *     "message": "Failed to fetch sponsor details.",
+     *     "error": "Detailed error message"
+     * }
+     *
+     * @example php
+     * $response = $client->get('/sponsors/1', [
+     *     'headers' => [
+     *         'Authorization' => 'Bearer YOUR_TOKEN_HERE'
+     *     ]
+     * ]);
      */
+
     public function getSponsorDetails(int $sponsorId): JsonResponse
     {
         try {

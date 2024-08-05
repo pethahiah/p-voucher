@@ -19,6 +19,58 @@ use App\Http\Responses\ApiResponse;
 
 class AuthController extends Controller
 {
+
+    /**
+     * @group Authentication
+     *
+     * Register a new user.
+     *
+     * This endpoint registers a new user, creates associated records based on the user type, and optionally uploads a profile image.
+     *
+     * @bodyParam email string required The user's email address. Example: user@example.com
+     * @bodyParam phone string required The user's phone number. Example: +1234567890
+     * @bodyParam city string required The city where the user resides. Example: Lagos
+     * @bodyParam address string required The user's address. Example: 123 Main St
+     * @bodyParam state string required The state where the user resides. Example: Lagos
+     * @bodyParam country string required The country where the user resides. Example: Nigeria
+     * @bodyParam usertype string required The type of user: merchant or sponsor. Example: merchant
+     * @bodyParam password string required The user's password. Example: Password123!
+     * @bodyParam password_confirmation string required Confirmation of the user's password. Example: Password123!
+     * @bodyParam image file optional An optional profile image. The file must be an image (jpg, jpeg, png, gif) and under 2MB.
+     * @bodyParam store_name string optional The store name (required if usertype is merchant). Example: Super Store
+     * @bodyParam store_description string optional A description of the store (required if usertype is merchant). Example: Best store in town
+     * @bodyParam sponsor_name string optional The sponsor's name (required if usertype is sponsor). Example: Big Sponsor Inc
+     * @bodyParam sponsor_registration_number string optional The sponsor's registration number (required if usertype is sponsor). Example: REG123456
+     * @bodyParam sponsor_description string optional A description of the sponsor (required if usertype is sponsor). Example: Leading sponsor in the industry
+     * @bodyParam type string optional The type of sponsor (required if usertype is sponsor). Example: Gold
+     *
+     * @response 201 {
+     *     "success": true,
+     *     "message": "User created successfully.",
+     *     "data": {
+     *         "id": 1,
+     *         "email": "user@example.com",
+     *         "phone": "+1234567890",
+     *         "city": "Lagos",
+     *         "address": "123 Main St",
+     *         "state": "Lagos",
+     *         "country": "Nigeria",
+     *         "usertype": "merchant",
+     *         "image": "http://localhost/storage/images/image.jpg",
+     *         "created_at": "2024-01-01T00:00:00.000000Z",
+     *         "updated_at": "2024-01-01T00:00:00.000000Z"
+     *     }
+     * }
+     *
+     * @response 422 {
+     *     "success": false,
+     *     "message": "Validation error",
+     *     "errors": {
+     *         "email": ["The email has already been taken."],
+     *         "password": ["The password confirmation does not match."]
+     *     }
+     * }
+     */
     public function register(Request $request): JsonResponse
     {
         // Validate the request
@@ -89,6 +141,38 @@ class AuthController extends Controller
     }
 
 
+    /**
+     * @group Authentication
+     *
+     * Attempt to login and send an OTP.
+     *
+     * This endpoint verifies the user's email and sends an OTP to the user's email for authentication.
+     *
+     * @bodyParam email string required The user's email address. Example: user@example.com
+     * @bodyParam password string required The user's password. Example: Password123!
+     *
+     * @response 200 {
+     *     "success": true,
+     *     "message": "OTP sent successfully.",
+     *     "data": null
+     * }
+     *
+     * @response 401 {
+     *     "success": false,
+     *     "message": "Invalid credentials.",
+     *     "error": "Detailed error message"
+     * }
+     *
+     * @response 422 {
+     *     "success": false,
+     *     "message": "Validation error",
+     *     "errors": {
+     *         "email": ["The email field is required."],
+     *         "password": ["The password field is required."]
+     *     }
+     * }
+     */
+
 
     public function AttemptLogin(Request $request): JsonResponse
     {
@@ -129,6 +213,39 @@ class AuthController extends Controller
         }
     }
 
+
+    /**
+     * @group Authentication
+     *
+     * Login using OTP.
+     *
+     * This endpoint logs the user in using the OTP sent to their email.
+     *
+     * @bodyParam email string required The user's email address. Example: user@example.com
+     * @bodyParam otp string required The OTP sent to the user's email. Example: 123456
+     *
+     * @response 200 {
+     *     "success": true,
+     *     "message": "Login successful.",
+     *     "data": "Bearer token"
+     * }
+     *
+     * @response 401 {
+     *     "success": false,
+     *     "message": "Invalid OTP or email.",
+     *     "error": "Detailed error message"
+     * }
+     *
+     * @response 422 {
+     *     "success": false,
+     *     "message": "Validation error",
+     *     "errors": {
+     *         "email": ["The email field is required."],
+     *         "otp": ["The otp field is required."]
+     *     }
+     * }
+     */
+
     public function loginViaOtp(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
@@ -156,7 +273,25 @@ class AuthController extends Controller
         }
     }
 
-
+    /**
+     * @group Authentication
+     *
+     * Logout the currently authenticated user.
+     *
+     * This endpoint logs out the currently authenticated user and revokes all their tokens.
+     *
+     * @response 200 {
+     *     "success": true,
+     *     "message": "Success! You are logged out.",
+     *     "data": null
+     * }
+     *
+     * @response 403 {
+     *     "success": false,
+     *     "message": "Failed! You are already logged out.",
+     *     "error": "Detailed error message"
+     * }
+     */
 
     public function logout(): JsonResponse
     {

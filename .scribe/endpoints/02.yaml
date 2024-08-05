@@ -1,0 +1,99 @@
+name: Merchants
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: 'api/merchants/{id}'
+    metadata:
+      groupName: Merchants
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Get merchant profile.
+
+        This endpoint retrieves the profile details of a specific merchant based on their ID.
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the merchant.'
+        required: true
+        example: optio
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      merchantId:
+        name: merchantId
+        description: 'The ID of the merchant.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      id: optio
+      merchantId: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+              "success": true,
+              "message": "Merchant profile fetched successfully.",
+              "data": {
+                  "id": 1,
+                  "user_id": 2,
+                  "store_name": "Merchant Store",
+                  "store_description": "A description of the store.",
+                  "location": "City",
+                  "contact_email": "merchant@example.com",
+                  "contact_phone": "+1234567890",
+                  "created_at": "2024-01-01T00:00:00.000000Z",
+                  "updated_at": "2024-01-01T00:00:00.000000Z"
+              }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+              "success": false,
+              "message": "Merchant not found.",
+              "error": "Detailed error message"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+              "success": false,
+              "message": "Failed to fetch merchant profile.",
+              "error": "Detailed error message"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []

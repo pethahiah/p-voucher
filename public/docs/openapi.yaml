@@ -1,0 +1,2259 @@
+openapi: 3.0.3
+info:
+  title: p-voucher-app
+  description: ''
+  version: 1.0.0
+servers:
+  -
+    url: 'http://localhost'
+paths:
+  /api/attemptLogin:
+    post:
+      summary: "Attempt to login and send an OTP.\n\nThis endpoint verifies the user's email and sends an OTP to the user's email for authentication."
+      operationId: attemptToLoginAndSendAnOTPThisEndpointVerifiesTheUsersEmailAndSendsAnOTPToTheUsersEmailForAuthentication
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'OTP sent successfully.'
+                  data: null
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'OTP sent successfully.'
+                  data:
+                    type: string
+                    example: null
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Invalid credentials.'
+                  error: 'Detailed error message'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Invalid credentials.'
+                  error:
+                    type: string
+                    example: 'Detailed error message'
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Validation error'
+                  errors:
+                    email:
+                      - 'The email field is required.'
+                    password:
+                      - 'The password field is required.'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Validation error'
+                  errors:
+                    type: object
+                    properties:
+                      email:
+                        type: array
+                        example:
+                          - 'The email field is required.'
+                        items:
+                          type: string
+                      password:
+                        type: array
+                        example:
+                          - 'The password field is required.'
+                        items:
+                          type: string
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'The user''s email address.'
+                  example: user@example.com
+                password:
+                  type: string
+                  description: 'The user''s password.'
+                  example: Password123!
+              required:
+                - email
+                - password
+      security: []
+  /api/loginViaOtp:
+    post:
+      summary: "Login using OTP.\n\nThis endpoint logs the user in using the OTP sent to their email."
+      operationId: loginUsingOTPThisEndpointLogsTheUserInUsingTheOTPSentToTheirEmail
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Login successful.'
+                  data: 'Bearer token'
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Login successful.'
+                  data:
+                    type: string
+                    example: 'Bearer token'
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Invalid OTP or email.'
+                  error: 'Detailed error message'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Invalid OTP or email.'
+                  error:
+                    type: string
+                    example: 'Detailed error message'
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Validation error'
+                  errors:
+                    email:
+                      - 'The email field is required.'
+                    otp:
+                      - 'The otp field is required.'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Validation error'
+                  errors:
+                    type: object
+                    properties:
+                      email:
+                        type: array
+                        example:
+                          - 'The email field is required.'
+                        items:
+                          type: string
+                      otp:
+                        type: array
+                        example:
+                          - 'The otp field is required.'
+                        items:
+                          type: string
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'The user''s email address.'
+                  example: user@example.com
+                otp:
+                  type: string
+                  description: 'The OTP sent to the user''s email.'
+                  example: '123456'
+              required:
+                - email
+                - otp
+      security: []
+  /api/register:
+    post:
+      summary: "Register a new user.\n\nThis endpoint registers a new user, creates associated records based on the user type, and optionally uploads a profile image."
+      operationId: registerANewUserThisEndpointRegistersANewUserCreatesAssociatedRecordsBasedOnTheUserTypeAndOptionallyUploadsAProfileImage
+      description: ''
+      parameters: []
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'User created successfully.'
+                  data:
+                    id: 1
+                    email: user@example.com
+                    phone: '+1234567890'
+                    city: Lagos
+                    address: '123 Main St'
+                    state: Lagos
+                    country: Nigeria
+                    usertype: merchant
+                    image: 'http://localhost/storage/images/image.jpg'
+                    created_at: '2024-01-01T00:00:00.000000Z'
+                    updated_at: '2024-01-01T00:00:00.000000Z'
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'User created successfully.'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      email:
+                        type: string
+                        example: user@example.com
+                      phone:
+                        type: string
+                        example: '+1234567890'
+                      city:
+                        type: string
+                        example: Lagos
+                      address:
+                        type: string
+                        example: '123 Main St'
+                      state:
+                        type: string
+                        example: Lagos
+                      country:
+                        type: string
+                        example: Nigeria
+                      usertype:
+                        type: string
+                        example: merchant
+                      image:
+                        type: string
+                        example: 'http://localhost/storage/images/image.jpg'
+                      created_at:
+                        type: string
+                        example: '2024-01-01T00:00:00.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-01-01T00:00:00.000000Z'
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Validation error'
+                  errors:
+                    email:
+                      - 'The email has already been taken.'
+                    password:
+                      - 'The password confirmation does not match.'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Validation error'
+                  errors:
+                    type: object
+                    properties:
+                      email:
+                        type: array
+                        example:
+                          - 'The email has already been taken.'
+                        items:
+                          type: string
+                      password:
+                        type: array
+                        example:
+                          - 'The password confirmation does not match.'
+                        items:
+                          type: string
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'The user''s email address.'
+                  example: user@example.com
+                phone:
+                  type: string
+                  description: 'The user''s phone number.'
+                  example: '+1234567890'
+                city:
+                  type: string
+                  description: 'The city where the user resides.'
+                  example: Lagos
+                address:
+                  type: string
+                  description: 'The user''s address.'
+                  example: '123 Main St'
+                state:
+                  type: string
+                  description: 'The state where the user resides.'
+                  example: Lagos
+                country:
+                  type: string
+                  description: 'The country where the user resides.'
+                  example: Nigeria
+                usertype:
+                  type: string
+                  description: 'The type of user: merchant or sponsor.'
+                  example: merchant
+                password:
+                  type: string
+                  description: 'The user''s password.'
+                  example: Password123!
+                password_confirmation:
+                  type: string
+                  description: 'Confirmation of the user''s password.'
+                  example: Password123!
+                image:
+                  type: string
+                  format: binary
+                  description: 'optional An optional profile image. The file must be an image (jpg, jpeg, png, gif) and under 2MB.'
+                store_name:
+                  type: string
+                  description: 'optional The store name (required if usertype is merchant).'
+                  example: 'Super Store'
+                store_description:
+                  type: string
+                  description: 'optional A description of the store (required if usertype is merchant).'
+                  example: 'Best store in town'
+                sponsor_name:
+                  type: string
+                  description: 'optional The sponsor''s name (required if usertype is sponsor).'
+                  example: 'Big Sponsor Inc'
+                sponsor_registration_number:
+                  type: string
+                  description: 'optional The sponsor''s registration number (required if usertype is sponsor).'
+                  example: REG123456
+                sponsor_description:
+                  type: string
+                  description: 'optional A description of the sponsor (required if usertype is sponsor).'
+                  example: 'Leading sponsor in the industry'
+                type:
+                  type: string
+                  description: 'optional The type of sponsor (required if usertype is sponsor).'
+                  example: Gold
+              required:
+                - email
+                - phone
+                - city
+                - address
+                - state
+                - country
+                - usertype
+                - password
+                - password_confirmation
+      security: []
+  /api/logout:
+    get:
+      summary: "Logout the currently authenticated user.\n\nThis endpoint logs out the currently authenticated user and revokes all their tokens."
+      operationId: logoutTheCurrentlyAuthenticatedUserThisEndpointLogsOutTheCurrentlyAuthenticatedUserAndRevokesAllTheirTokens
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Success! You are logged out.'
+                  data: null
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Success! You are logged out.'
+                  data:
+                    type: string
+                    example: null
+        403:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Failed! You are already logged out.'
+                  error: 'Detailed error message'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Failed! You are already logged out.'
+                  error:
+                    type: string
+                    example: 'Detailed error message'
+      tags:
+        - Authentication
+      security: []
+  '/api/merchants/{id}':
+    get:
+      summary: "Get merchant profile.\n\nThis endpoint retrieves the profile details of a specific merchant based on their ID."
+      operationId: getMerchantProfileThisEndpointRetrievesTheProfileDetailsOfASpecificMerchantBasedOnTheirID
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Merchant profile fetched successfully.'
+                  data:
+                    id: 1
+                    user_id: 2
+                    store_name: 'Merchant Store'
+                    store_description: 'A description of the store.'
+                    location: City
+                    contact_email: merchant@example.com
+                    contact_phone: '+1234567890'
+                    created_at: '2024-01-01T00:00:00.000000Z'
+                    updated_at: '2024-01-01T00:00:00.000000Z'
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Merchant profile fetched successfully.'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      user_id:
+                        type: integer
+                        example: 2
+                      store_name:
+                        type: string
+                        example: 'Merchant Store'
+                      store_description:
+                        type: string
+                        example: 'A description of the store.'
+                      location:
+                        type: string
+                        example: City
+                      contact_email:
+                        type: string
+                        example: merchant@example.com
+                      contact_phone:
+                        type: string
+                        example: '+1234567890'
+                      created_at:
+                        type: string
+                        example: '2024-01-01T00:00:00.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-01-01T00:00:00.000000Z'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Merchant not found.'
+                  error: 'Detailed error message'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Merchant not found.'
+                  error:
+                    type: string
+                    example: 'Detailed error message'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Failed to fetch merchant profile.'
+                  error: 'Detailed error message'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Failed to fetch merchant profile.'
+                  error:
+                    type: string
+                    example: 'Detailed error message'
+      tags:
+        - Merchants
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the merchant.'
+        example: optio
+        required: true
+        schema:
+          type: string
+      -
+        in: path
+        name: merchantId
+        description: 'The ID of the merchant.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/sponsors/{id}':
+    get:
+      summary: "Get sponsor details.\n\nThis endpoint retrieves details of a specific sponsor based on their ID."
+      operationId: getSponsorDetailsThisEndpointRetrievesDetailsOfASpecificSponsorBasedOnTheirID
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Sponsor details fetched successfully.'
+                  data:
+                    id: 1
+                    name: 'Sponsor Name'
+                    email: sponsor@example.com
+                    phone: '+1234567890'
+                    created_at: '2024-01-01T00:00:00.000000Z'
+                    updated_at: '2024-01-01T00:00:00.000000Z'
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Sponsor details fetched successfully.'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: 'Sponsor Name'
+                      email:
+                        type: string
+                        example: sponsor@example.com
+                      phone:
+                        type: string
+                        example: '+1234567890'
+                      created_at:
+                        type: string
+                        example: '2024-01-01T00:00:00.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-01-01T00:00:00.000000Z'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Sponsor not found.'
+                  error: 'Detailed error message'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Sponsor not found.'
+                  error:
+                    type: string
+                    example: 'Detailed error message'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Failed to fetch sponsor details.'
+                  error: 'Detailed error message'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Failed to fetch sponsor details.'
+                  error:
+                    type: string
+                    example: 'Detailed error message'
+      tags:
+        - Sponsors
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the sponsor.'
+        example: quia
+        required: true
+        schema:
+          type: string
+      -
+        in: path
+        name: sponsorId
+        description: 'The ID of the sponsor.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/vouchers:
+    post:
+      summary: "Create a new voucher.\n\nThis endpoint allows sponsors to create a new voucher with specified parameters."
+      operationId: createANewVoucherThisEndpointAllowsSponsorsToCreateANewVoucherWithSpecifiedParameters
+      description: ''
+      parameters: []
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Voucher created successfully.'
+                  data:
+                    purpose: 'Special Event'
+                    voucher_amount: 100
+                    amount_per_code: 10
+                    expiry_date: '2024-12-31'
+                    limit: 500
+                    type: multiple_time
+                    code_generation_method: qr_code
+                    location: Oyo
+                    sponsor_id: 1
+                    voucher_code: 19AGVCBQOA
+                    updated_at: '2024-08-02T17:25:18.000000Z'
+                    created_at: '2024-08-02T17:25:18.000000Z'
+                    id: 10
+                    merchants:
+                      -
+                        id: 1
+                        user_id: 2
+                        store_name: 'olaoluwa store'
+                        store_description: 'we feed the nation'
+                        created_at: '2024-08-02T17:25:18.000000Z'
+                        updated_at: '2024-08-02T17:25:18.000000Z'
+                        voucher_code: 19AGVCBQOA
+                      -
+                        id: 2
+                        user_id: 3
+                        store_name: 'olaoluwa store'
+                        store_description: 'we feed the nation'
+                        created_at: '2024-08-02T17:25:18.000000Z'
+                        updated_at: '2024-08-02T17:25:18.000000Z'
+                        voucher_code: 19AGVCBQOA
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Voucher created successfully.'
+                  data:
+                    type: object
+                    properties:
+                      purpose:
+                        type: string
+                        example: 'Special Event'
+                      voucher_amount:
+                        type: integer
+                        example: 100
+                      amount_per_code:
+                        type: integer
+                        example: 10
+                      expiry_date:
+                        type: string
+                        example: '2024-12-31'
+                      limit:
+                        type: integer
+                        example: 500
+                      type:
+                        type: string
+                        example: multiple_time
+                      code_generation_method:
+                        type: string
+                        example: qr_code
+                      location:
+                        type: string
+                        example: Oyo
+                      sponsor_id:
+                        type: integer
+                        example: 1
+                      voucher_code:
+                        type: string
+                        example: 19AGVCBQOA
+                      updated_at:
+                        type: string
+                        example: '2024-08-02T17:25:18.000000Z'
+                      created_at:
+                        type: string
+                        example: '2024-08-02T17:25:18.000000Z'
+                      id:
+                        type: integer
+                        example: 10
+                      merchants:
+                        type: array
+                        example:
+                          -
+                            id: 1
+                            user_id: 2
+                            store_name: 'olaoluwa store'
+                            store_description: 'we feed the nation'
+                            created_at: '2024-08-02T17:25:18.000000Z'
+                            updated_at: '2024-08-02T17:25:18.000000Z'
+                            voucher_code: 19AGVCBQOA
+                          -
+                            id: 2
+                            user_id: 3
+                            store_name: 'olaoluwa store'
+                            store_description: 'we feed the nation'
+                            created_at: '2024-08-02T17:25:18.000000Z'
+                            updated_at: '2024-08-02T17:25:18.000000Z'
+                            voucher_code: 19AGVCBQOA
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            user_id:
+                              type: integer
+                              example: 2
+                            store_name:
+                              type: string
+                              example: 'olaoluwa store'
+                            store_description:
+                              type: string
+                              example: 'we feed the nation'
+                            created_at:
+                              type: string
+                              example: '2024-08-02T17:25:18.000000Z'
+                            updated_at:
+                              type: string
+                              example: '2024-08-02T17:25:18.000000Z'
+                            voucher_code:
+                              type: string
+                              example: 19AGVCBQOA
+        403:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Unauthorized: Only sponsors can create vouchers.'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Unauthorized: Only sponsors can create vouchers.'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Failed to create voucher.'
+                  error: 'Detailed error message'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Failed to create voucher.'
+                  error:
+                    type: string
+                    example: 'Detailed error message'
+      tags:
+        - Vouchers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                merchant_id:
+                  type: array
+                  description: 'optional Array of merchant IDs.'
+                  example:
+                    - 1
+                    - 2
+                  items:
+                    type: string
+                purpose:
+                  type: string
+                  description: 'optional Purpose of the voucher.'
+                  example: '"Special Event"'
+                voucher_amount:
+                  type: number
+                  description: 'Total amount of the voucher.'
+                  example: 100.0
+                amount_per_code:
+                  type: number
+                  description: 'Amount per voucher code.'
+                  example: 10.0
+                expiry_date:
+                  type: string
+                  description: 'optional Expiry date of the voucher in YYYY-MM-DD format.'
+                  example: '"2024-12-31"'
+                limit:
+                  type: number
+                  description: 'optional Limit on the number of uses.'
+                  example: 500.0
+                type:
+                  type: string
+                  description: 'optional Type of voucher (one_time or multiple_time).'
+                  example: multiple_time
+                code_generation_method:
+                  type: string
+                  description: 'optional Method for generating codes (sms or qr_code).'
+                  example: qr_code
+                location:
+                  type: string
+                  description: 'optional Location where the voucher is valid.'
+                  example: '"Oyo"'
+              required:
+                - voucher_amount
+                - amount_per_code
+      security: []
+  /api/vouchers/redeem:
+    post:
+      summary: "Redeem a voucher.\n\nThis endpoint allows users to redeem a voucher by providing its code."
+      operationId: redeemAVoucherThisEndpointAllowsUsersToRedeemAVoucherByProvidingItsCode
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Voucher redeemed successfully.'
+                  data:
+                    response: null
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Voucher redeemed successfully.'
+                  data:
+                    type: object
+                    properties:
+                      response:
+                        type: string
+                        example: null
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      success: false
+                      message: 'Voucher has expired.'
+                    properties:
+                      success:
+                        type: boolean
+                        example: false
+                      message:
+                        type: string
+                        example: 'Voucher has expired.'
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      success: false
+                      message: 'Voucher has already been used.'
+                    properties:
+                      success:
+                        type: boolean
+                        example: false
+                      message:
+                        type: string
+                        example: 'Voucher has already been used.'
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      success: false
+                      message: 'No more vouchers available.'
+                    properties:
+                      success:
+                        type: boolean
+                        example: false
+                      message:
+                        type: string
+                        example: 'No more vouchers available.'
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      success: false
+                      message: 'Voucher is not valid in your location.'
+                    properties:
+                      success:
+                        type: boolean
+                        example: false
+                      message:
+                        type: string
+                        example: 'Voucher is not valid in your location.'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Voucher not found.'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Voucher not found.'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Failed to redeem voucher.'
+                  error: 'Detailed error message'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Failed to redeem voucher.'
+                  error:
+                    type: string
+                    example: 'Detailed error message'
+      tags:
+        - Vouchers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                voucher_code:
+                  type: string
+                  description: ''
+                  example: saepe
+              required:
+                - voucher_code
+      security: []
+    parameters:
+      -
+        in: path
+        name: voucher_code
+        description: 'The code of the voucher to redeem.'
+        example: '"19AGVCBQOA"'
+        required: true
+        schema:
+          type: string
+  '/api/update/{VoucherId}/voucher':
+    post:
+      summary: "Update an existing voucher.\n\nThis endpoint allows updating the details of a voucher."
+      operationId: updateAnExistingVoucherThisEndpointAllowsUpdatingTheDetailsOfAVoucher
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Voucher updated successfully.'
+                  data:
+                    response:
+                      id: 10
+                      voucher_code: 19AGVCBQOA
+                      sponsor_id: 1
+                      purpose: 'Special Discount'
+                      expiry_date: '2024-12-31'
+                      limit: 100
+                      voucher_amount: 50.0
+                      amount_per_code: 5.0
+                      location: Lagos
+                      type: one_time
+                      voucher_status: unused
+                      code_generation_method: qr_code
+                      deleted_at: null
+                      created_at: '2024-08-02T17:25:18.000000Z'
+                      updated_at: '2024-08-02T17:29:05.000000Z'
+                      merchants:
+                        -
+                          id: 1
+                          user_id: 2
+                          store_name: 'olaoluwa store'
+                          store_description: 'we feed the nation'
+                          voucher_code: null
+                          deleted_at: null
+                          created_at: '2024-08-02T17:05:28.000000Z'
+                          updated_at: '2024-08-02T17:05:28.000000Z'
+                          pivot:
+                            voucher_id: 10
+                            merchant_id: 1
+                            voucher_code: 19AGVCBQOA
+                            created_at: '2024-08-02T17:25:18.000000Z'
+                            updated_at: '2024-08-02T17:29:05.000000Z'
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Voucher updated successfully.'
+                  data:
+                    type: object
+                    properties:
+                      response:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 10
+                          voucher_code:
+                            type: string
+                            example: 19AGVCBQOA
+                          sponsor_id:
+                            type: integer
+                            example: 1
+                          purpose:
+                            type: string
+                            example: 'Special Discount'
+                          expiry_date:
+                            type: string
+                            example: '2024-12-31'
+                          limit:
+                            type: integer
+                            example: 100
+                          voucher_amount:
+                            type: number
+                            example: 50.0
+                          amount_per_code:
+                            type: number
+                            example: 5.0
+                          location:
+                            type: string
+                            example: Lagos
+                          type:
+                            type: string
+                            example: one_time
+                          voucher_status:
+                            type: string
+                            example: unused
+                          code_generation_method:
+                            type: string
+                            example: qr_code
+                          deleted_at:
+                            type: string
+                            example: null
+                          created_at:
+                            type: string
+                            example: '2024-08-02T17:25:18.000000Z'
+                          updated_at:
+                            type: string
+                            example: '2024-08-02T17:29:05.000000Z'
+                          merchants:
+                            type: array
+                            example:
+                              -
+                                id: 1
+                                user_id: 2
+                                store_name: 'olaoluwa store'
+                                store_description: 'we feed the nation'
+                                voucher_code: null
+                                deleted_at: null
+                                created_at: '2024-08-02T17:05:28.000000Z'
+                                updated_at: '2024-08-02T17:05:28.000000Z'
+                                pivot:
+                                  voucher_id: 10
+                                  merchant_id: 1
+                                  voucher_code: 19AGVCBQOA
+                                  created_at: '2024-08-02T17:25:18.000000Z'
+                                  updated_at: '2024-08-02T17:29:05.000000Z'
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 1
+                                user_id:
+                                  type: integer
+                                  example: 2
+                                store_name:
+                                  type: string
+                                  example: 'olaoluwa store'
+                                store_description:
+                                  type: string
+                                  example: 'we feed the nation'
+                                voucher_code:
+                                  type: string
+                                  example: null
+                                deleted_at:
+                                  type: string
+                                  example: null
+                                created_at:
+                                  type: string
+                                  example: '2024-08-02T17:05:28.000000Z'
+                                updated_at:
+                                  type: string
+                                  example: '2024-08-02T17:05:28.000000Z'
+                                pivot:
+                                  type: object
+                                  properties:
+                                    voucher_id:
+                                      type: integer
+                                      example: 10
+                                    merchant_id:
+                                      type: integer
+                                      example: 1
+                                    voucher_code:
+                                      type: string
+                                      example: 19AGVCBQOA
+                                    created_at:
+                                      type: string
+                                      example: '2024-08-02T17:25:18.000000Z'
+                                    updated_at:
+                                      type: string
+                                      example: '2024-08-02T17:29:05.000000Z'
+        403:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Unauthorized: Only sponsors can update vouchers.'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Unauthorized: Only sponsors can update vouchers.'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Voucher not found.'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Voucher not found.'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Failed to update voucher.'
+                  error: 'Detailed error message'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Failed to update voucher.'
+                  error:
+                    type: string
+                    example: 'Detailed error message'
+      tags:
+        - Vouchers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                merchant_id:
+                  type: array
+                  description: 'List of merchant IDs associated with the voucher.'
+                  example:
+                    - 1
+                  items:
+                    type: string
+                purpose:
+                  type: string
+                  description: 'Purpose of the voucher.'
+                  example: '"Special Discount"'
+                voucher_amount:
+                  type: number
+                  description: 'Total amount of the voucher.'
+                  example: 50.0
+                amount_per_code:
+                  type: number
+                  description: 'Amount per voucher code.'
+                  example: 5.0
+                expiry_date:
+                  type: string
+                  description: 'Expiry date of the voucher in YYYY-MM-DD format.'
+                  example: '"2024-12-31"'
+                limit:
+                  type: number
+                  description: 'Limit on the number of uses.'
+                  example: 100.0
+                type:
+                  type: string
+                  description: 'Type of voucher (one_time or multiple_time).'
+                  example: one_time
+                code_generation_method:
+                  type: string
+                  description: 'Method for generating codes (qr_code or sms).'
+                  example: qr_code
+                location:
+                  type: string
+                  description: 'Location where the voucher is valid.'
+                  example: '"Lagos"'
+              required:
+                - merchant_id
+                - purpose
+                - voucher_amount
+                - amount_per_code
+                - expiry_date
+                - limit
+                - type
+                - code_generation_method
+                - location
+      security: []
+    parameters:
+      -
+        in: path
+        name: VoucherId
+        description: ''
+        example: minima
+        required: true
+        schema:
+          type: string
+      -
+        in: path
+        name: voucherId
+        description: 'The ID of the voucher to update.'
+        example: 10
+        required: true
+        schema:
+          type: integer
+  '/api/revoke/{VoucherId}':
+    post:
+      summary: 'Soft delete a voucher.'
+      operationId: softDeleteAVoucher
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Voucher revoked successfully.'
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Voucher revoked successfully.'
+        403:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Unauthorized: Only admin sponsors can revoke vouchers.'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Unauthorized: Only admin sponsors can revoke vouchers.'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Voucher not found.'
+                  error: 'Detailed error message'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Voucher not found.'
+                  error:
+                    type: string
+                    example: 'Detailed error message'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Failed to revoke voucher.'
+                  error: 'Detailed error message'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Failed to revoke voucher.'
+                  error:
+                    type: string
+                    example: 'Detailed error message'
+      tags:
+        - Vouchers
+      security: []
+    parameters:
+      -
+        in: path
+        name: VoucherId
+        description: ''
+        example: inventore
+        required: true
+        schema:
+          type: string
+  '/api/delete-voucher/{VoucherId}':
+    post:
+      summary: 'Permanently delete a voucher.'
+      operationId: permanentlyDeleteAVoucher
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Voucher deleted successfully.'
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Voucher deleted successfully.'
+        403:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Unauthorized: Only admin sponsors can delete vouchers.'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Unauthorized: Only admin sponsors can delete vouchers.'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Voucher not found.'
+                  error: 'Detailed error message'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Voucher not found.'
+                  error:
+                    type: string
+                    example: 'Detailed error message'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Failed to delete voucher.'
+                  error: 'Detailed error message'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Failed to delete voucher.'
+                  error:
+                    type: string
+                    example: 'Detailed error message'
+      tags:
+        - Vouchers
+      security: []
+    parameters:
+      -
+        in: path
+        name: VoucherId
+        description: ''
+        example: tempore
+        required: true
+        schema:
+          type: string
+  /api/vouchers/by-sponsor:
+    get:
+      summary: 'Fetch all vouchers created by a sponsor.'
+      operationId: fetchAllVouchersCreatedByASponsor
+      description: ''
+      parameters:
+        -
+          in: query
+          name: per_page
+          description: 'optional Number of items per page.'
+          example: 15
+          required: false
+          schema:
+            type: integer
+            description: 'optional Number of items per page.'
+            example: 15
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Fetched vouchers successfully.'
+                  data:
+                    data:
+                      -
+                        id: 1
+                        voucher_code: ABC123
+                        voucher_amount: 100.0
+                        created_at: '2024-08-05T00:00:00Z'
+                        updated_at: '2024-08-05T00:00:00Z'
+                    current_page: 1
+                    last_page: 10
+                    per_page: 15
+                    total: 150
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Fetched vouchers successfully.'
+                  data:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        example:
+                          -
+                            id: 1
+                            voucher_code: ABC123
+                            voucher_amount: 100
+                            created_at: '2024-08-05T00:00:00Z'
+                            updated_at: '2024-08-05T00:00:00Z'
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            voucher_code:
+                              type: string
+                              example: ABC123
+                            voucher_amount:
+                              type: number
+                              example: 100.0
+                            created_at:
+                              type: string
+                              example: '2024-08-05T00:00:00Z'
+                            updated_at:
+                              type: string
+                              example: '2024-08-05T00:00:00Z'
+                      current_page:
+                        type: integer
+                        example: 1
+                      last_page:
+                        type: integer
+                        example: 10
+                      per_page:
+                        type: integer
+                        example: 15
+                      total:
+                        type: integer
+                        example: 150
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Failed to fetch vouchers.'
+                  error: 'Detailed error message'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Failed to fetch vouchers.'
+                  error:
+                    type: string
+                    example: 'Detailed error message'
+      tags:
+        - Vouchers
+      security: []
+  /api/vouchers/used:
+    get:
+      summary: "Get used vouchers.\n\nThis endpoint retrieves all used vouchers with pagination support."
+      operationId: getUsedVouchersThisEndpointRetrievesAllUsedVouchersWithPaginationSupport
+      description: ''
+      parameters:
+        -
+          in: query
+          name: per_page
+          description: 'The number of vouchers per page. Default is 15.'
+          example: 15
+          required: false
+          schema:
+            type: integer
+            description: 'The number of vouchers per page. Default is 15.'
+            example: 15
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Fetched used vouchers successfully.'
+                  data:
+                    -
+                      id: 10
+                      voucher_code: 19AGVCBQOA
+                      purpose: 'Special Event'
+                      expiry_date: '2024-12-31'
+                      amount_per_code: 10
+                      voucher_amount: 100
+                      location: Oyo
+                      type: multiple_time
+                      code_generation_method: qr_code
+                      used_at: '2024-08-02T17:25:18.000000Z'
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Fetched used vouchers successfully.'
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 10
+                        voucher_code: 19AGVCBQOA
+                        purpose: 'Special Event'
+                        expiry_date: '2024-12-31'
+                        amount_per_code: 10
+                        voucher_amount: 100
+                        location: Oyo
+                        type: multiple_time
+                        code_generation_method: qr_code
+                        used_at: '2024-08-02T17:25:18.000000Z'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 10
+                        voucher_code:
+                          type: string
+                          example: 19AGVCBQOA
+                        purpose:
+                          type: string
+                          example: 'Special Event'
+                        expiry_date:
+                          type: string
+                          example: '2024-12-31'
+                        amount_per_code:
+                          type: integer
+                          example: 10
+                        voucher_amount:
+                          type: integer
+                          example: 100
+                        location:
+                          type: string
+                          example: Oyo
+                        type:
+                          type: string
+                          example: multiple_time
+                        code_generation_method:
+                          type: string
+                          example: qr_code
+                        used_at:
+                          type: string
+                          example: '2024-08-02T17:25:18.000000Z'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Failed to fetch used vouchers.'
+                  error: 'Detailed error message'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Failed to fetch used vouchers.'
+                  error:
+                    type: string
+                    example: 'Detailed error message'
+      tags:
+        - Vouchers
+      security: []
+  /api/vouchers/redeemed:
+    get:
+      summary: "Get redeemed vouchers.\n\nThis endpoint retrieves all redeemed vouchers with pagination support."
+      operationId: getRedeemedVouchersThisEndpointRetrievesAllRedeemedVouchersWithPaginationSupport
+      description: ''
+      parameters:
+        -
+          in: query
+          name: per_page
+          description: 'The number of vouchers per page. Default is 15.'
+          example: 15
+          required: false
+          schema:
+            type: integer
+            description: 'The number of vouchers per page. Default is 15.'
+            example: 15
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Fetched redeemed vouchers successfully.'
+                  data:
+                    -
+                      id: 10
+                      voucher_code: 19AGVCBQOA
+                      purpose: 'Special Event'
+                      expiry_date: '2024-12-31'
+                      amount_per_code: 10
+                      voucher_amount: 100
+                      location: Oyo
+                      type: multiple_time
+                      code_generation_method: qr_code
+                      redeemed_at: '2024-08-02T17:25:18.000000Z'
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Fetched redeemed vouchers successfully.'
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 10
+                        voucher_code: 19AGVCBQOA
+                        purpose: 'Special Event'
+                        expiry_date: '2024-12-31'
+                        amount_per_code: 10
+                        voucher_amount: 100
+                        location: Oyo
+                        type: multiple_time
+                        code_generation_method: qr_code
+                        redeemed_at: '2024-08-02T17:25:18.000000Z'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 10
+                        voucher_code:
+                          type: string
+                          example: 19AGVCBQOA
+                        purpose:
+                          type: string
+                          example: 'Special Event'
+                        expiry_date:
+                          type: string
+                          example: '2024-12-31'
+                        amount_per_code:
+                          type: integer
+                          example: 10
+                        voucher_amount:
+                          type: integer
+                          example: 100
+                        location:
+                          type: string
+                          example: Oyo
+                        type:
+                          type: string
+                          example: multiple_time
+                        code_generation_method:
+                          type: string
+                          example: qr_code
+                        redeemed_at:
+                          type: string
+                          example: '2024-08-02T17:25:18.000000Z'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Failed to fetch redeemed vouchers.'
+                  error: 'Detailed error message'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Failed to fetch redeemed vouchers.'
+                  error:
+                    type: string
+                    example: 'Detailed error message'
+      tags:
+        - Vouchers
+      security: []
+  /api/beneficiaries/redeemed:
+    get:
+      summary: "Get beneficiaries with redeemed vouchers.\n\nThis endpoint retrieves beneficiaries who have redeemed vouchers with pagination support."
+      operationId: getBeneficiariesWithRedeemedVouchersThisEndpointRetrievesBeneficiariesWhoHaveRedeemedVouchersWithPaginationSupport
+      description: ''
+      parameters:
+        -
+          in: query
+          name: per_page
+          description: 'The number of beneficiaries per page. Default is 15.'
+          example: 15
+          required: false
+          schema:
+            type: integer
+            description: 'The number of beneficiaries per page. Default is 15.'
+            example: 15
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Fetched beneficiaries with redeemed vouchers successfully.'
+                  data:
+                    -
+                      id: 1
+                      name: 'John Doe'
+                      redeemed_vouchers_count: 5
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Fetched beneficiaries with redeemed vouchers successfully.'
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        name: 'John Doe'
+                        redeemed_vouchers_count: 5
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: 'John Doe'
+                        redeemed_vouchers_count:
+                          type: integer
+                          example: 5
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Failed to fetch beneficiaries.'
+                  error: 'Detailed error message'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Failed to fetch beneficiaries.'
+                  error:
+                    type: string
+                    example: 'Detailed error message'
+      tags:
+        - Vouchers
+      security: []
+  /api/vouchers/yet-to-be-redeemed:
+    get:
+      summary: "Get vouchers yet to be redeemed.\n\nThis endpoint retrieves vouchers that have not yet been redeemed with pagination support."
+      operationId: getVouchersYetToBeRedeemedThisEndpointRetrievesVouchersThatHaveNotYetBeenRedeemedWithPaginationSupport
+      description: ''
+      parameters:
+        -
+          in: query
+          name: per_page
+          description: 'The number of vouchers per page. Default is 15.'
+          example: 15
+          required: false
+          schema:
+            type: integer
+            description: 'The number of vouchers per page. Default is 15.'
+            example: 15
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Fetched vouchers yet to be redeemed successfully.'
+                  data:
+                    -
+                      id: 10
+                      voucher_code: 19AGVCBQOA
+                      purpose: 'Special Event'
+                      expiry_date: '2024-12-31'
+                      amount_per_code: 10
+                      voucher_amount: 100
+                      location: Oyo
+                      type: multiple_time
+                      code_generation_method: qr_code
+                      created_at: '2024-08-02T17:25:18.000000Z'
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Fetched vouchers yet to be redeemed successfully.'
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 10
+                        voucher_code: 19AGVCBQOA
+                        purpose: 'Special Event'
+                        expiry_date: '2024-12-31'
+                        amount_per_code: 10
+                        voucher_amount: 100
+                        location: Oyo
+                        type: multiple_time
+                        code_generation_method: qr_code
+                        created_at: '2024-08-02T17:25:18.000000Z'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 10
+                        voucher_code:
+                          type: string
+                          example: 19AGVCBQOA
+                        purpose:
+                          type: string
+                          example: 'Special Event'
+                        expiry_date:
+                          type: string
+                          example: '2024-12-31'
+                        amount_per_code:
+                          type: integer
+                          example: 10
+                        voucher_amount:
+                          type: integer
+                          example: 100
+                        location:
+                          type: string
+                          example: Oyo
+                        type:
+                          type: string
+                          example: multiple_time
+                        code_generation_method:
+                          type: string
+                          example: qr_code
+                        created_at:
+                          type: string
+                          example: '2024-08-02T17:25:18.000000Z'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Failed to fetch vouchers yet to be redeemed.'
+                  error: 'Detailed error message'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Failed to fetch vouchers yet to be redeemed.'
+                  error:
+                    type: string
+                    example: 'Detailed error message'
+      tags:
+        - Vouchers
+      security: []
+  /api/voucher-search/date-range:
+    get:
+      summary: "Get vouchers by date range.\n\nThis endpoint allows sponsors to fetch vouchers within a specified date range."
+      operationId: getVouchersByDateRangeThisEndpointAllowsSponsorsToFetchVouchersWithinASpecifiedDateRange
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Vouchers fetched successfully.'
+                  data:
+                    -
+                      id: 10
+                      voucher_code: 19AGVCBQOA
+                      purpose: 'Special Event'
+                      expiry_date: '2024-12-31'
+                      amount_per_code: 10
+                      voucher_amount: 100
+                      location: Oyo
+                      type: multiple_time
+                      code_generation_method: qr_code
+                      created_at: '2024-08-02T17:25:18.000000Z'
+                      updated_at: '2024-08-02T17:25:18.000000Z'
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Vouchers fetched successfully.'
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 10
+                        voucher_code: 19AGVCBQOA
+                        purpose: 'Special Event'
+                        expiry_date: '2024-12-31'
+                        amount_per_code: 10
+                        voucher_amount: 100
+                        location: Oyo
+                        type: multiple_time
+                        code_generation_method: qr_code
+                        created_at: '2024-08-02T17:25:18.000000Z'
+                        updated_at: '2024-08-02T17:25:18.000000Z'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 10
+                        voucher_code:
+                          type: string
+                          example: 19AGVCBQOA
+                        purpose:
+                          type: string
+                          example: 'Special Event'
+                        expiry_date:
+                          type: string
+                          example: '2024-12-31'
+                        amount_per_code:
+                          type: integer
+                          example: 10
+                        voucher_amount:
+                          type: integer
+                          example: 100
+                        location:
+                          type: string
+                          example: Oyo
+                        type:
+                          type: string
+                          example: multiple_time
+                        code_generation_method:
+                          type: string
+                          example: qr_code
+                        created_at:
+                          type: string
+                          example: '2024-08-02T17:25:18.000000Z'
+                        updated_at:
+                          type: string
+                          example: '2024-08-02T17:25:18.000000Z'
+        403:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Unauthorized: Only sponsors can access their vouchers.'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Unauthorized: Only sponsors can access their vouchers.'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Failed to fetch vouchers.'
+                  error: 'Detailed error message'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Failed to fetch vouchers.'
+                  error:
+                    type: string
+                    example: 'Detailed error message'
+      tags:
+        - Vouchers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                start_date:
+                  type: string
+                  description: 'Must be a valid date.'
+                  example: '2024-08-05T07:51:40'
+                end_date:
+                  type: string
+                  description: 'Must be a valid date.'
+                  example: '2024-08-05T07:51:40'
+              required:
+                - start_date
+                - end_date
+      security: []
+    parameters:
+      -
+        in: path
+        name: start_date
+        description: 'The start date of the date range. Format: YYYY-MM-DD.'
+        example: '"2024-01-01"'
+        required: true
+        schema:
+          type: string
+      -
+        in: path
+        name: end_date
+        description: 'The end date of the date range. Format: YYYY-MM-DD.'
+        example: '"2024-12-31"'
+        required: true
+        schema:
+          type: string
+tags:
+  -
+    name: Authentication
+    description: ''
+  -
+    name: Merchants
+    description: ''
+  -
+    name: Sponsors
+    description: ''
+  -
+    name: Vouchers
+    description: "\nAPIs for managing vouchers."
