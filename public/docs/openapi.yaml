@@ -5,7 +5,7 @@ info:
   version: 1.0.0
 servers:
   -
-    url: 'http://localhost'
+    url: 'https://evoucher.eduland.ng/api'
 paths:
   /api/attemptLogin:
     post:
@@ -110,7 +110,6 @@ paths:
               required:
                 - email
                 - password
-      security: []
   /api/loginViaOtp:
     post:
       summary: "Login using OTP.\n\nThis endpoint logs the user in using the OTP sent to their email."
@@ -214,7 +213,6 @@ paths:
               required:
                 - email
                 - otp
-      security: []
   /api/register:
     post:
       summary: "Register a new user.\n\nThis endpoint registers a new user, creates associated records based on the user type, and optionally uploads a profile image."
@@ -405,7 +403,6 @@ paths:
                 - usertype
                 - password
                 - password_confirmation
-      security: []
   /api/logout:
     get:
       summary: "Logout the currently authenticated user.\n\nThis endpoint logs out the currently authenticated user and revokes all their tokens."
@@ -455,7 +452,6 @@ paths:
                     example: 'Detailed error message'
       tags:
         - Authentication
-      security: []
   '/api/merchants/{id}':
     get:
       summary: "Get merchant profile.\n\nThis endpoint retrieves the profile details of a specific merchant based on their ID."
@@ -561,13 +557,12 @@ paths:
                     example: 'Detailed error message'
       tags:
         - Merchants
-      security: []
     parameters:
       -
         in: path
         name: id
         description: 'The ID of the merchant.'
-        example: optio
+        example: itaque
         required: true
         schema:
           type: string
@@ -672,13 +667,12 @@ paths:
                     example: 'Detailed error message'
       tags:
         - Sponsors
-      security: []
     parameters:
       -
         in: path
         name: id
         description: 'The ID of the sponsor.'
-        example: quia
+        example: et
         required: true
         schema:
           type: string
@@ -917,7 +911,6 @@ paths:
               required:
                 - voucher_amount
                 - amount_per_code
-      security: []
   /api/vouchers/redeem:
     post:
       summary: "Redeem a voucher.\n\nThis endpoint allows users to redeem a voucher by providing its code."
@@ -1055,10 +1048,9 @@ paths:
                 voucher_code:
                   type: string
                   description: ''
-                  example: saepe
+                  example: laboriosam
               required:
                 - voucher_code
-      security: []
     parameters:
       -
         in: path
@@ -1348,13 +1340,12 @@ paths:
                 - type
                 - code_generation_method
                 - location
-      security: []
     parameters:
       -
         in: path
         name: VoucherId
         description: ''
-        example: minima
+        example: minus
         required: true
         schema:
           type: string
@@ -1447,13 +1438,12 @@ paths:
                     example: 'Detailed error message'
       tags:
         - Vouchers
-      security: []
     parameters:
       -
         in: path
         name: VoucherId
         description: ''
-        example: inventore
+        example: voluptatem
         required: true
         schema:
           type: string
@@ -1538,13 +1528,12 @@ paths:
                     example: 'Detailed error message'
       tags:
         - Vouchers
-      security: []
     parameters:
       -
         in: path
         name: VoucherId
         description: ''
-        example: tempore
+        example: expedita
         required: true
         schema:
           type: string
@@ -1657,7 +1646,6 @@ paths:
                     example: 'Detailed error message'
       tags:
         - Vouchers
-      security: []
   /api/vouchers/used:
     get:
       summary: "Get used vouchers.\n\nThis endpoint retrieves all used vouchers with pagination support."
@@ -1772,7 +1760,6 @@ paths:
                     example: 'Detailed error message'
       tags:
         - Vouchers
-      security: []
   /api/vouchers/redeemed:
     get:
       summary: "Get redeemed vouchers.\n\nThis endpoint retrieves all redeemed vouchers with pagination support."
@@ -1887,7 +1874,6 @@ paths:
                     example: 'Detailed error message'
       tags:
         - Vouchers
-      security: []
   /api/beneficiaries/redeemed:
     get:
       summary: "Get beneficiaries with redeemed vouchers.\n\nThis endpoint retrieves beneficiaries who have redeemed vouchers with pagination support."
@@ -1967,7 +1953,6 @@ paths:
                     example: 'Detailed error message'
       tags:
         - Vouchers
-      security: []
   /api/vouchers/yet-to-be-redeemed:
     get:
       summary: "Get vouchers yet to be redeemed.\n\nThis endpoint retrieves vouchers that have not yet been redeemed with pagination support."
@@ -2082,7 +2067,6 @@ paths:
                     example: 'Detailed error message'
       tags:
         - Vouchers
-      security: []
   /api/voucher-search/date-range:
     get:
       summary: "Get vouchers by date range.\n\nThis endpoint allows sponsors to fetch vouchers within a specified date range."
@@ -2218,15 +2202,14 @@ paths:
                 start_date:
                   type: string
                   description: 'Must be a valid date.'
-                  example: '2024-08-05T07:51:40'
+                  example: '2024-08-11T19:53:07'
                 end_date:
                   type: string
                   description: 'Must be a valid date.'
-                  example: '2024-08-05T07:51:40'
+                  example: '2024-08-11T19:53:07'
               required:
                 - start_date
                 - end_date
-      security: []
     parameters:
       -
         in: path
@@ -2257,3 +2240,12 @@ tags:
   -
     name: Vouchers
     description: "\nAPIs for managing vouchers."
+components:
+  securitySchemes:
+    default:
+      type: http
+      scheme: bearer
+      description: 'You can retrieve your token by visiting your dashboard and clicking <b>Generate API token</b>.'
+security:
+  -
+    default: []

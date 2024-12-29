@@ -10,8 +10,8 @@ use App\Services\VoucherService;
 use App\Http\Responses\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-
-
+use App\Traits\GetAuthUserProfileTrait;
+use Illuminate\Support\Facades\Http;
 
 /**
  * @group Vouchers
@@ -21,7 +21,9 @@ use Illuminate\Support\Facades\Auth;
 
 class VoucherController extends Controller
 {
-    protected VoucherService $voucherService;
+    protected $voucherService;
+    
+    use GetAuthUserProfileTrait;
 
     public function __construct(VoucherService $voucherService)
     {
@@ -112,42 +114,57 @@ class VoucherController extends Controller
      * ]);
      */
 
-    public function store(Request $request): JsonResponse
-    {
-        // Ensure the authenticated user is of type 'sponsor'
-        $user = Auth::user();
-        if ($user->usertype !== 'sponsor') {
-            return ApiResponse::error('Unauthorized: Only sponsors can create vouchers.', [], 403);
+
+   public function store(Request $request): JsonResponse
+{
+    // Ensure the authenticated user is of type 'sponsor'
+    $token = $request->bearerToken();
+
+    // Validate the request
+    $validated = $request->validate([
+        'purpose' => 'nullable|string',
+        'voucher_amount' => 'required|numeric',
+        'amount_per_code' => 'required|numeric',
+        'expiry_date' => 'nullable|date',
+        'limit' => 'nullable|numeric',
+        'type' => 'nullable|in:one_time,multiple_time',
+        'code_generation_method' => 'nullable|in:sms,qr_code',
+        'location' => 'nullable|string',
+    ]);
+
+    $userProfile = $this->getAuthSponsorProfile($token);
+
+    // Add sponsor_id to validated data
+    $validated['sponsor_id'] = $userProfile['id'];
+
+    // Normalize merchant_id to array if it is a single ID
+    if (isset($validated['merchant_id']) && !is_array($validated['merchant_id'])) {
+        $validated['merchant_id'] = [$validated['merchant_id']];
+    }
+
+    try {
+        // Check if all merchant_ids exist in the database
+        if (isset($validated['merchant_id']) && !empty($validated['merchant_id'])) {
+            $response = Http::get('https://api.azatme.com/api/getAllMerchants');
+
+            $apiResponse = json_decode($response->body(), true);
+            
+            if (!is_array($apiResponse) || empty($apiResponse)) {
+                throw new \Exception('Failed to retrieve user profiles. API response is invalid.');
+            }
+            if (count($apiResponse) !== count($apiResponse['usertype'] == 'merchant')) {
+                return ApiResponse::error('Some merchant IDs are invalid.', [], 400);
+            }
         }
 
-        // Validate the request
-        $validated = $request->validate([
-            'merchant_id' => 'nullable|array',
-            'merchant_id.*' => 'exists:merchants,id',
-            'purpose' => 'nullable|string',
-            'voucher_amount' => 'required|numeric',
-            'amount_per_code' => 'required|numeric',
-            'expiry_date' => 'nullable|date',
-            'limit' => 'nullable|numeric',
-            'type' => 'nullable|in:one_time,multiple_time',
-            'code_generation_method' => 'nullable|in:sms,qr_code',
-            'location' => 'nullable|string',
-        ]);
+        // Pass the validated data to the service to create the voucher
+        $voucher = $this->voucherService->createVoucher($validated, $token);
 
-        // Add sponsor_id to validated data
-        $validated['sponsor_id'] = $user->id;
+        // Prepare the response data
+        $voucherData = $voucher->toArray();
 
-        // Normalize merchant_id to array if it is a single ID
-        if (isset($validated['merchant_id']) && !is_array($validated['merchant_id'])) {
-            $validated['merchant_id'] = [$validated['merchant_id']];
-        }
-
-        try {
-            // Pass the validated data to the service
-            $voucher = $this->voucherService->createVoucher($validated);
-
-            // Prepare the response with voucher and associated merchants
-            $voucherData = $voucher->toArray();
+        // Only load merchants if merchant_id is provided
+        if (isset($validated['merchant_id']) && !empty($validated['merchant_id'])) {
             $voucherData['merchants'] = $voucher->merchants->map(function ($merchant) {
                 return [
                     'id' => $merchant->id,
@@ -159,12 +176,16 @@ class VoucherController extends Controller
                     'voucher_code' => $merchant->pivot->voucher_code,
                 ];
             });
-
-            return ApiResponse::success('Voucher created successfully.', $voucherData, 201);
-        } catch (\Exception $e) {
-            return ApiResponse::error('Failed to create voucher.', ['error' => $e->getMessage()], 500);
+        } else {
+            $voucherData['merchants'] = [];
         }
+
+        return ApiResponse::success('Voucher created successfully.', $voucherData, 201);
+    } catch (\Exception $e) {
+        return ApiResponse::error('Failed to create voucher.', ['error' => $e->getMessage()], 500);
     }
+}
+
 
     /**
      * @group Vouchers
@@ -263,15 +284,12 @@ class VoucherController extends Controller
     public function update(Request $request, int $voucherId): JsonResponse
     {
         // Ensure the authenticated user is of type 'sponsor'
-        $user = Auth::user();
-        if ($user->usertype !== 'sponsor') {
-            return ApiResponse::error('Unauthorized: Only sponsors can update vouchers.', [], 403);
-        }
+        $token = $request->bearerToken();
 
         // Validate the request with optional fields
         $validated = $request->validate([
-            'merchant_id' => 'nullable|array',
-            'merchant_id.*' => 'nullable|exists:merchants,id',
+           // 'merchant_id' => 'nullable|array',
+          //  'merchant_id.*' => 'nullable|exists:merchants,id',
             'purpose' => 'nullable|string',
             'voucher_amount' => 'nullable|numeric',
             'amount_per_code' => 'nullable|numeric',
@@ -282,8 +300,10 @@ class VoucherController extends Controller
             'location' => 'nullable|string',
         ]);
 
+        $userProfile = $this->getAuthSponsorProfile($token);
+
         // Add sponsor_id to validated data
-        $validated['sponsor_id'] = $user->id;
+        $validated['sponsor_id'] = $userProfile['id'];
 
         // Normalize merchant_id to array if it is a single ID
         if (isset($validated['merchant_id']) && !is_array($validated['merchant_id'])) {
@@ -344,10 +364,11 @@ class VoucherController extends Controller
     public function revoke(Request $request, int $VoucherId): JsonResponse
     {
 
-        $user = Auth::user();
-        if ($user->usertype !== 'sponsor') {
-            return ApiResponse::error('Unauthorized: Only admin sponsors can revoke vouchers.', [], 403);
-        }
+         // Ensure the authenticated user is of type 'sponsor'
+        $token = $request->bearerToken();
+        
+        $userProfile = $this->getAuthSponsorProfile($token);
+    
         try {
             // Call the service to soft delete the voucher
             $this->voucherService->revokeVoucher($VoucherId);
@@ -399,10 +420,10 @@ class VoucherController extends Controller
 
     public function destroy(Request $request, int $VoucherId): JsonResponse
     {
-        $user = Auth::user();
-        if ($user->usertype !== 'sponsor') {
-            return ApiResponse::error('Unauthorized: Only admin sponsors can delete vouchers.', [], 403);
-        }
+         // Ensure the authenticated user is of type 'sponsor'
+        $token = $request->bearerToken();
+        
+        $userProfile = $this->getAuthSponsorProfile($token);
 
 
         try {
@@ -475,42 +496,49 @@ class VoucherController extends Controller
      */
 
     public function redeem(Request $request): JsonResponse
-    {
-        // Validate the request
-        $validated = $request->validate([
-            'voucher_code' => 'required|string',
-        ]);
+{
+    
+    $token = $request->bearerToken();
+    
+    $userProfile = $this->getAuthUserProfile($token);
+    
+    
+    $validated = $request->validate([
+        'voucher_code' => 'required|string',
+    ]);
 
-        // Retrieve the beneficiary's IP address
-        $ipAddress = $request->ip();
+    $ipAddress = $request->ip();
 
-        try {
-            // Redeem the voucher
-            $result = $this->voucherService->redeemVoucher($validated['voucher_code'], $ipAddress);
+    try {
+        $result = $this->voucherService->redeemVoucher($validated['voucher_code'], $ipAddress);
 
-            if ($result['success']) {
-                return ApiResponse::success('Voucher redeemed successfully.');
-            }
-
-            // Determine appropriate status code based on the result message
-            $statusCode = match ($result['message']) {
-                'Voucher has expired.' => 400,
-                'Voucher has already been used.' => 400,
-                'No more vouchers available.' => 400,
-                'Voucher is not valid in your location.' => 400,
-                'Voucher not found.' => 404,
-                default => 500,
-            };
-
-            return ApiResponse::error($result['message'], [], $statusCode);
-        } catch (ModelNotFoundException $e) {
-            return ApiResponse::error('Voucher not found.', ['error' => $e->getMessage()], 404);
-        } catch (QueryException $e) {
-            return ApiResponse::error('Failed to redeem voucher.', ['error' => $e->getMessage()], 500);
-        } catch (\Exception $e) {
-            return ApiResponse::error('An unexpected error occurred.', ['error' => $e->getMessage()], 500);
+        if ($result['success']) {
+            return ApiResponse::success('Voucher redeemed successfully.');
         }
+
+        $statusCode = 500;
+        switch ($result['message'] ?? 'Unknown error') {
+            case 'Voucher has expired.':
+            case 'Voucher has already been used.':
+            case 'No more vouchers available.':
+            case 'Voucher is not valid in your location.':
+                $statusCode = 400;
+                break;
+            case 'Voucher not found.':
+                $statusCode = 404;
+                break;
+        }
+
+        return ApiResponse::error($result['message'], [], $statusCode);
+    } catch (ModelNotFoundException $e) {
+        return ApiResponse::error('Voucher not found.', ['error' => $e->getMessage()], 404);
+    } catch (QueryException $e) {
+        return ApiResponse::error('Failed to redeem voucher.', ['error' => $e->getMessage()], 500);
+    } catch (\Exception $e) {
+        return ApiResponse::error('An unexpected error occurred.', ['error' => $e->getMessage()], 500);
     }
+}
+
 
     /**
      * Fetch all vouchers created by a sponsor.
@@ -546,16 +574,16 @@ class VoucherController extends Controller
 
     public function getVouchersBySponsor(Request $request): JsonResponse
     {
-        $user = Auth::user();
-        if ($user->usertype !== 'sponsor') {
-            return ApiResponse::error('Unauthorized: Only sponsors can access their vouchers.', [], 403);
-        }
+        // Ensure the authenticated user is of type 'sponsor'
+        $token = $request->bearerToken();
+        
+        $userProfile = $this->getAuthSponsorProfile($token);
 
 
         $perPage = $request->input('per_page', 15);
 
         try {
-            $vouchers = $this->voucherService->getVouchersBySponsor($user->id, $perPage);
+            $vouchers = $this->voucherService->getVouchersBySponsor($userProfile['id'], $perPage);
             return ApiResponse::success('Fetched vouchers successfully.', $vouchers);
         } catch (\Exception $e) {
             return ApiResponse::error('Failed to fetch vouchers.', ['error' => $e->getMessage()], 500);
@@ -622,17 +650,17 @@ class VoucherController extends Controller
             'end_date' => 'required|date'
         ]);
 
-        $user = Auth::user();
-        if ($user->usertype !== 'sponsor') {
-            return ApiResponse::error('Unauthorized: Only sponsors can access their vouchers.', [], 403);
-        }
+         // Ensure the authenticated user is of type 'sponsor'
+        $token = $request->bearerToken();
+        
+        $userProfile = $this->getAuthSponsorProfile($token);
 
         $startDate = $validated['start_date'];
         $endDate = $validated['end_date'];
 
         try {
             // Fetch vouchers by date range
-            $vouchers = $this->voucherService->getVouchersByDateRange($user->id, $startDate, $endDate);
+            $vouchers = $this->voucherService->getVouchersByDateRange($userProfile['id'], $startDate, $endDate);
 
             return ApiResponse::success('Vouchers fetched successfully.', $vouchers);
         } catch (\Exception $e) {

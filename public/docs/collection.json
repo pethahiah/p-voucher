@@ -5,12 +5,12 @@
             "key": "baseUrl",
             "type": "string",
             "name": "string",
-            "value": "http:\/\/localhost"
+            "value": "https:\/\/evoucher.eduland.ng\/api"
         }
     ],
     "info": {
         "name": "p-voucher-app",
-        "_postman_id": "08ecf1ed-5add-4214-af45-3363572c92ae",
+        "_postman_id": "7bf6e616-738c-4fab-8a71-84a96106d0d0",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -43,10 +43,7 @@
                             "mode": "raw",
                             "raw": "{\"email\":\"user@example.com\",\"password\":\"Password123!\"}"
                         },
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
                     "response": [
                         {
@@ -93,10 +90,7 @@
                             "mode": "raw",
                             "raw": "{\"email\":\"user@example.com\",\"otp\":\"123456\"}"
                         },
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
                     "response": [
                         {
@@ -239,10 +233,7 @@
                                 }
                             ]
                         },
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
                     "response": [
                         {
@@ -280,10 +271,7 @@
                             }
                         ],
                         "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
                     "response": [
                         {
@@ -318,7 +306,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "optio",
+                                    "value": "itaque",
                                     "description": "The ID of the merchant."
                                 },
                                 {
@@ -341,10 +329,7 @@
                             }
                         ],
                         "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
                     "response": [
                         {
@@ -385,7 +370,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "quia",
+                                    "value": "et",
                                     "description": "The ID of the sponsor."
                                 },
                                 {
@@ -408,10 +393,7 @@
                             }
                         ],
                         "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
                     "response": [
                         {
@@ -464,10 +446,7 @@
                             "mode": "raw",
                             "raw": "{\"merchant_id\":[1,2],\"purpose\":\"\\\"Special Event\\\"\",\"voucher_amount\":100,\"amount_per_code\":10,\"expiry_date\":\"\\\"2024-12-31\\\"\",\"limit\":500,\"type\":\"multiple_time\",\"code_generation_method\":\"qr_code\",\"location\":\"\\\"Oyo\\\"\"}"
                         },
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
                     "response": [
                         {
@@ -520,12 +499,9 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"voucher_code\":\"saepe\"}"
+                            "raw": "{\"voucher_code\":\"laboriosam\"}"
                         },
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
                     "response": [
                         {
@@ -584,7 +560,7 @@
                                 {
                                     "id": "VoucherId",
                                     "key": "VoucherId",
-                                    "value": "minima",
+                                    "value": "minus",
                                     "description": ""
                                 },
                                 {
@@ -610,10 +586,7 @@
                             "mode": "raw",
                             "raw": "{\"merchant_id\":[1],\"purpose\":\"\\\"Special Discount\\\"\",\"voucher_amount\":50,\"amount_per_code\":5,\"expiry_date\":\"\\\"2024-12-31\\\"\",\"limit\":100,\"type\":\"one_time\",\"code_generation_method\":\"qr_code\",\"location\":\"\\\"Lagos\\\"\"}"
                         },
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
                     "response": [
                         {
@@ -654,7 +627,7 @@
                                 {
                                     "id": "VoucherId",
                                     "key": "VoucherId",
-                                    "value": "inventore",
+                                    "value": "voluptatem",
                                     "description": ""
                                 }
                             ]
@@ -671,10 +644,7 @@
                             }
                         ],
                         "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
                     "response": [
                         {
@@ -715,7 +685,7 @@
                                 {
                                     "id": "VoucherId",
                                     "key": "VoucherId",
-                                    "value": "tempore",
+                                    "value": "expedita",
                                     "description": ""
                                 }
                             ]
@@ -732,10 +702,7 @@
                             }
                         ],
                         "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
                     "response": [
                         {
@@ -792,10 +759,7 @@
                             }
                         ],
                         "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
                     "response": [
                         {
@@ -840,10 +804,7 @@
                             }
                         ],
                         "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
                     "response": [
                         {
@@ -888,10 +849,7 @@
                             }
                         ],
                         "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
                     "response": [
                         {
@@ -936,10 +894,7 @@
                             }
                         ],
                         "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
                     "response": [
                         {
@@ -984,10 +939,7 @@
                             }
                         ],
                         "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
                     "response": [
                         {
@@ -1040,12 +992,9 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"start_date\":\"2024-08-05T07:51:40\",\"end_date\":\"2024-08-05T07:51:40\"}"
+                            "raw": "{\"start_date\":\"2024-08-11T19:53:07\",\"end_date\":\"2024-08-11T19:53:07\"}"
                         },
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": ""
                     },
                     "response": [
                         {
@@ -1072,6 +1021,12 @@
         }
     ],
     "auth": {
-        "type": "noauth"
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "key",
+                "type": "string"
+            }
+        ]
     }
 }

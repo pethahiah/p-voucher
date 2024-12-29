@@ -17,8 +17,13 @@ use App\Models\Beneficiary;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
+
+
+
 class VoucherService
 {
+    
+    
     public function createVoucher(array $data)
     {
         // Generate a unique voucher code
@@ -27,7 +32,7 @@ class VoucherService
         if (!isset($data['sponsor_id'])) {
             throw new \Exception('Missing sponsor_id.');
         }
-
+        
         // Create the voucher
         $voucher = Voucher::create($data);
 
@@ -38,7 +43,7 @@ class VoucherService
             // Sync merchants with the voucher
             $voucher->merchants()->sync($pivotData);
         }
-
+   
         // Reload the voucher with merchants and the pivot data
         $voucher->load('merchants');
 
