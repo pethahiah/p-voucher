@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Route;
     Route::post('/loginViaOtp', [AuthController::class, 'loginViaOtp']);
     Route::post('/register', [AuthController::class, 'register']);
 
-Route::middleware(['auth:sanctum'])->group(function () {
+
         Route::get('/logout', [AuthController::class, 'logout']);
         Route::post('vouchers', [VoucherController::class, 'store']);
         Route::post('vouchers/redeem', [VoucherController::class, 'redeem']);
@@ -46,6 +46,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/sponsors/{id}', [SponsorController::class, 'getSponsorDetails']);
         Route::get('/voucher-search/date-range', [VoucherController::class, 'getVouchersByDateRange']);
 
-});
+
 
 
